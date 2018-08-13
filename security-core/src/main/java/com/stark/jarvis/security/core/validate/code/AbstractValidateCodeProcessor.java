@@ -60,16 +60,16 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 
 	/**
 	 * 发送校验码，由子类实现。
-	 * @param request
-	 * @param validateCode
-	 * @throws Exception
+	 * @param request HTTP 请求对象。
+	 * @param validateCode 验证码。
+	 * @throws Exception 未知异常。
 	 */
 	protected abstract void send(ServletWebRequest request, C validateCode) throws Exception;
 
 	/**
 	 * 根据请求的 url 获取校验码类型。
-	 * @param request
-	 * @return
+	 * @param request HTTP 请求对象。
+	 * @return 未知异常。
 	 */
 	private ValidateCodeType getValidateCodeType(ServletWebRequest request) {
 		String type = StringUtils.substringBefore(getClass().getSimpleName(), "CodeProcessor");

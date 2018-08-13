@@ -30,7 +30,7 @@ public class DefaultUserDetailsService implements JarvisUserDetailsService {
 	}
 
 	@Override
-	public UserDetails loadUserByPhoneNumber(String phoneNumber) throws UsernameNotFoundException {
+	public SocialUserDetails loadUserByPhoneNumber(String phoneNumber) throws UsernameNotFoundException {
 		logger.error("请配置 JarvisUserDetailsService 接口的实现！");
 		throw new UsernameNotFoundException("phoneNumber=" + phoneNumber);
 	}

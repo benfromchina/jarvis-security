@@ -74,10 +74,9 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 	}
 
 	/**
-	 * 讲系统中配置的需要校验验证码的URL根据校验的类型放入map
-	 * 
-	 * @param urlString
-	 * @param type
+	 * 将系统中配置的需要校验验证码的 URL 根据校验的类型放入 map 。
+	 * @param urlString url 列表，以 "," 隔开。
+	 * @param type 验证码类型。
 	 */
 	protected void addUrlToMap(String urlString, ValidateCodeType type) {
 		if (StringUtils.isNotBlank(urlString)) {

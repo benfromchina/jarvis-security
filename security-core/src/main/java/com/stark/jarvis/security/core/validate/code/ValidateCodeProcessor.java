@@ -12,14 +12,14 @@ public interface ValidateCodeProcessor {
 
 	/**
 	 * 生成验证码。
-	 * @param request
-	 * @throws Exception
+	 * @param request HTTP 请求对象。
+	 * @throws Exception 未知异常。
 	 */
 	void create(ServletWebRequest request) throws Exception;
 
 	/**
 	 * 校验验证码
-	 * @param servletWebRequest
+	 * @param servletWebRequest spring 请求响应对象。
 	 */
 	void validate(ServletWebRequest servletWebRequest);
 

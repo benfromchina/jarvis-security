@@ -63,16 +63,19 @@ public class OpenIdAuthenticationFilter extends AbstractAuthenticationProcessing
 		return this.getAuthenticationManager().authenticate(authRequest);
 	}
 
-
 	/**
-	 * 获取openId
+	 * 获取 openId 。
+	 * @param request HTTP 请求对象。
+	 * @return openId。
 	 */
 	protected String obtainOpenId(HttpServletRequest request) {
 		return request.getParameter(openIdParameter);
 	}
 	
 	/**
-	 * 获取提供商id
+	 * 获取提供商标识。
+	 * @param request HTTP 请求对象。
+	 * @return 提供商标识。
 	 */
 	protected String obtainProviderId(HttpServletRequest request) {
 		return request.getParameter(providerIdParameter);
@@ -93,14 +96,14 @@ public class OpenIdAuthenticationFilter extends AbstractAuthenticationProcessing
 	}
 
 	/**
-	 * Sets the parameter name which will be used to obtain the username from
+	 * Sets the parameter name which will be used to obtain the openId from
 	 * the login request.
 	 *
-	 * @param usernameParameter
-	 *            the parameter name. Defaults to "username".
+	 * @param openIdParameter
+	 *            the parameter name. Defaults to "openid".
 	 */
 	public void setOpenIdParameter(String openIdParameter) {
-		Assert.hasText(openIdParameter, "Username parameter must not be empty or null");
+		Assert.hasText(openIdParameter, "Openid parameter must not be empty or null");
 		this.openIdParameter = openIdParameter;
 	}
 
@@ -112,20 +115,32 @@ public class OpenIdAuthenticationFilter extends AbstractAuthenticationProcessing
 	 * will not be attempted. The <tt>unsuccessfulAuthentication()</tt> method
 	 * will be called as if handling a failed authentication.
 	 * <p>
-	 * Defaults to <tt>true</tt> but may be overridden by subclasses.
+	 * @param postOnly Defaults to <tt>true</tt> but may be overridden by subclasses.
 	 */
 	public void setPostOnly(boolean postOnly) {
 		this.postOnly = postOnly;
 	}
 
+	/**
+	 * 获取请求中 openId 的参数名。
+	 * @return openId 参数名。
+	 */
 	public final String getOpenIdParameter() {
 		return openIdParameter;
 	}
 
+	/**
+	 * 获取请求中 providerId 的参数名。
+	 * @return providerId 参数名。
+	 */
 	public String getProviderIdParameter() {
 		return providerIdParameter;
 	}
 
+	/**
+	 * 设置请求中 providerId 的参数名。
+	 * @param providerIdParameter providerId 参数名。
+	 */
 	public void setProviderIdParameter(String providerIdParameter) {
 		this.providerIdParameter = providerIdParameter;
 	}

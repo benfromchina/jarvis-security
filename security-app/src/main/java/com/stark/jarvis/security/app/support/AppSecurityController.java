@@ -32,8 +32,8 @@ public class AppSecurityController extends SocialController {
 	
 	/**
 	 * 需要注册时跳到这里，返回 401 和用户信息给前端。
-	 * @param request
-	 * @return
+	 * @param request HTTP 请求对象。
+	 * @return 社交用户信息。
 	 */
 	@GetMapping(SecurityConstants.DEFAULT_SOCIAL_USER_INFO_URL)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)

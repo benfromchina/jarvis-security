@@ -13,7 +13,8 @@ import org.springframework.security.config.annotation.web.configurers.Expression
 public interface AuthorizeConfigManager {
 	
 	/**
-	 * @param config
+	 * 配置授权策略。
+	 * @param config 基于 url 过滤的授权配置器。
 	 */
 	void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config);
 

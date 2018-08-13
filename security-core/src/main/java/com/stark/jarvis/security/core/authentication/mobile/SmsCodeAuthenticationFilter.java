@@ -57,9 +57,10 @@ public class SmsCodeAuthenticationFilter extends AbstractAuthenticationProcessin
 		return this.getAuthenticationManager().authenticate(authRequest);
 	}
 
-
 	/**
-	 * 获取手机号
+	 * 获取手机号。
+	 * @param request HTTP 请求对象。
+	 * @return 手机号。
 	 */
 	protected String obtainMobile(HttpServletRequest request) {
 		return request.getParameter(mobileParameter);
@@ -80,15 +81,15 @@ public class SmsCodeAuthenticationFilter extends AbstractAuthenticationProcessin
 	}
 
 	/**
-	 * Sets the parameter name which will be used to obtain the username from
+	 * Sets the parameter name which will be used to obtain the mobile from
 	 * the login request.
 	 *
-	 * @param usernameParameter
-	 *            the parameter name. Defaults to "username".
+	 * @param mobileParameter
+	 *            the parameter name. Defaults to "mobile".
 	 */
-	public void setMobileParameter(String usernameParameter) {
-		Assert.hasText(usernameParameter, "Username parameter must not be empty or null");
-		this.mobileParameter = usernameParameter;
+	public void setMobileParameter(String mobileParameter) {
+		Assert.hasText(mobileParameter, "Mobile parameter must not be empty or null");
+		this.mobileParameter = mobileParameter;
 	}
 
 
@@ -99,12 +100,16 @@ public class SmsCodeAuthenticationFilter extends AbstractAuthenticationProcessin
 	 * will not be attempted. The <tt>unsuccessfulAuthentication()</tt> method
 	 * will be called as if handling a failed authentication.
 	 * <p>
-	 * Defaults to <tt>true</tt> but may be overridden by subclasses.
+	 * @param postOnly Defaults to <tt>true</tt> but may be overridden by subclasses.
 	 */
 	public void setPostOnly(boolean postOnly) {
 		this.postOnly = postOnly;
 	}
 
+	/**
+	 * 获取手机号参数名。
+	 * @return 手机号参数名。
+	 */
 	public final String getMobileParameter() {
 		return mobileParameter;
 	}

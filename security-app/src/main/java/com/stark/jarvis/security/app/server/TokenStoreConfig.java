@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Description;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -23,20 +24,14 @@ import com.stark.jarvis.security.core.boot.properties.SecurityProperties;
 @Configuration
 public class TokenStoreConfig {
 	
-	/**
-	 * 使用 redis 存储 token 的配置。
-	 * <p>只有在 jarvis.security.oauth2.token-store 配置为 redis 时生效。
-	 */
 	@Configuration
 	@ConditionalOnProperty(prefix = "jarvis.security.oauth2", name = "token-store", havingValue = "redis")
+	@Description("使用 redis 存储 token 时的配置，只有在 jarvis.security.oauth2.token-store 配置为 redis 时生效")
 	public static class RedisConfig {
 		
 		@Autowired
 		private RedisConnectionFactory redisConnectionFactory;
 		
-		/**
-		 * @return
-		 */
 		@Bean
 		public TokenStore redisTokenStore() {
 			return new RedisTokenStore(redisConnectionFactory);
@@ -44,11 +39,9 @@ public class TokenStoreConfig {
 		
 	}
 
-	/**
-	 * 使用 jwt 时的配置，默认生效。
-	 */
 	@Configuration
 	@ConditionalOnProperty(prefix = "jarvis.security.oauth2", name = "token-store", havingValue = "jwt", matchIfMissing = true)
+	@Description("使用 jwt 时的配置，默认生效")
 	public static class JwtConfig {
 		
 		@Autowired

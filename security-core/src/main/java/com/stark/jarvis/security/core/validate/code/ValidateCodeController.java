@@ -26,10 +26,10 @@ public class ValidateCodeController {
 	/**
 	 * 创建验证码。
 	 * <p>根据验证码类型不同，调用不同的 {@link ValidateCodeProcessor} 接口实现。
-	 * @param request
-	 * @param response
-	 * @param type
-	 * @throws Exception
+	 * @param request HTTP 请求对象。
+	 * @param response HTTP 响应对象。
+	 * @param type 验证码类型。
+	 * @throws Exception 未知异常。
 	 */
 	@GetMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/{type}")
 	public void createCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type)

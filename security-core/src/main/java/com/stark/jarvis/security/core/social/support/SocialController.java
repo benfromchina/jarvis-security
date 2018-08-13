@@ -14,8 +14,8 @@ public abstract class SocialController {
 
 	/**
 	 * 根据 {@link Connection} 信息构建 {@link SocialUserInfo} 对象。
-	 * @param connection
-	 * @return
+	 * @param connection {@link Connection} 接口的实现。
+	 * @return 社交用户信息。
 	 */
 	protected SocialUserInfo buildSocialUserInfo(Connection<?> connection) {
 		SocialUserInfo userInfo = new SocialUserInfo();

@@ -38,8 +38,8 @@ public class Utils {
 	 * @param httpStatus 状态码。
 	 * @param response HTTP 响应对象。
 	 * @param javabean 响应对象。
-	 * @throws IOException
-	 * @throws JsonProcessingException
+	 * @throws IOException {@link HttpServletResponse#getWriter()} 抛出异常。
+	 * @throws JsonProcessingException javabean 转 json 对象时抛出异常。
 	 */
 	public static void responseAsJson(HttpStatus httpStatus, HttpServletResponse response, Object javabean) throws JsonProcessingException, IOException {
 		if (httpStatus == null) {
@@ -54,8 +54,8 @@ public class Utils {
 	 * 以 json 类型返回响应，状态码 200 。
 	 * @param response HTTP 响应对象。
 	 * @param javabean 响应对象。
-	 * @throws IOException
-	 * @throws JsonProcessingException
+	 * @throws IOException {@link HttpServletResponse#getWriter()} 抛出异常。
+	 * @throws JsonProcessingException javabean 转 json 对象时抛出异常。
 	 */
 	public static void responseAsJson(HttpServletResponse response, Object javabean) throws JsonProcessingException, IOException {
 		Utils.responseAsJson(HttpStatus.OK, response, javabean);

@@ -33,8 +33,8 @@ public class AppSignInUtils {
 
 	/**
 	 * 缓存社交网站用户信息到 redis 。
-	 * @param request
-	 * @param connectionData
+	 * @param request HTTP 请求对象。
+	 * @param connectionData 连接数据。
 	 */
 	public void saveConnectionData(WebRequest request, ConnectionData connectionData) {
 		redisTemplate.opsForValue().set(getKey(request), connectionData, 10, TimeUnit.MINUTES);
@@ -42,8 +42,8 @@ public class AppSignInUtils {
 
 	/**
 	 * 将缓存的社交网站用户信息与系统注册用户信息绑定。
-	 * @param request
-	 * @param userId
+	 * @param request HTTP 请求对象。
+	 * @param userId 用户标识。
 	 */
 	public void doPostSignUp(WebRequest request, String userId) {
 		String key = getKey(request);
@@ -60,8 +60,8 @@ public class AppSignInUtils {
 
 	/**
 	 * 获取 redis 存储的 key 。
-	 * @param request
-	 * @return
+	 * @param request HTTP 请求对象。
+	 * @return redis 存储的 key 。
 	 */
 	private String getKey(WebRequest request) {
 		String deviceId = request.getHeader("deviceId");

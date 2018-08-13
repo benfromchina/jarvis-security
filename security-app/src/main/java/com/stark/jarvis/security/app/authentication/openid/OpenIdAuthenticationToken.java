@@ -26,10 +26,9 @@ public class OpenIdAuthenticationToken extends AbstractAuthenticationToken {
 	// ===================================================================================================
 
 	/**
-	 * This constructor can be safely used by any code that wishes to create a
-	 * <code>UsernamePasswordAuthenticationToken</code>, as the {@link #isAuthenticated()}
-	 * will return <code>false</code>.
-	 *
+	 * 构造一个 {@link OpenIdAuthenticationToken} 对象。
+	 * @param openId 第三方应用的用户标识。
+	 * @param providerId 第三方应用标识。
 	 */
 	public OpenIdAuthenticationToken(String openId, String providerId) {
 		super(null);
@@ -39,19 +38,14 @@ public class OpenIdAuthenticationToken extends AbstractAuthenticationToken {
 	}
 
 	/**
-	 * This constructor should only be used by <code>AuthenticationManager</code> or
-	 * <code>AuthenticationProvider</code> implementations that are satisfied with
-	 * producing a trusted (i.e. {@link #isAuthenticated()} = <code>true</code>)
-	 * authentication token.
-	 *
-	 * @param principal
-	 * @param credentials
-	 * @param authorities
+	 * 构造一个 {@link OpenIdAuthenticationToken} 对象。
+	 * @param openId 第三方应用的用户标识。
+	 * @param authorities 权限集合。
 	 */
-	public OpenIdAuthenticationToken(Object principal,
+	public OpenIdAuthenticationToken(Object openId,
 			Collection<? extends GrantedAuthority> authorities) {
 		super(authorities);
-		this.openId = principal;
+		this.openId = openId;
 		super.setAuthenticated(true); // must use super, as we override
 	}
 

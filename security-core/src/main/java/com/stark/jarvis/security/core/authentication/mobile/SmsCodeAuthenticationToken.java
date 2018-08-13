@@ -25,10 +25,8 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 	// ===================================================================================================
 
 	/**
-	 * This constructor can be safely used by any code that wishes to create a
-	 * <code>UsernamePasswordAuthenticationToken</code>, as the {@link #isAuthenticated()}
-	 * will return <code>false</code>.
-	 *
+	 * 构造一个 {@link SmsCodeAuthenticationToken} 对象。
+	 * @param phoneNumber 手机号码。
 	 */
 	public SmsCodeAuthenticationToken(String phoneNumber) {
 		super(null);
@@ -37,14 +35,9 @@ public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
 	}
 
 	/**
-	 * This constructor should only be used by <code>AuthenticationManager</code> or
-	 * <code>AuthenticationProvider</code> implementations that are satisfied with
-	 * producing a trusted (i.e. {@link #isAuthenticated()} = <code>true</code>)
-	 * authentication token.
-	 *
-	 * @param principal
-	 * @param credentials
-	 * @param authorities
+	 * 构造一个 {@link SmsCodeAuthenticationToken} 对象。
+	 * @param phoneNumber 手机号码。
+	 * @param authorities 权限集合。
 	 */
 	public SmsCodeAuthenticationToken(Object phoneNumber,
 			Collection<? extends GrantedAuthority> authorities) {

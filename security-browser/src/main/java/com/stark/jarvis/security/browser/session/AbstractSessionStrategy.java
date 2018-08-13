@@ -19,7 +19,7 @@ import com.stark.jarvis.security.core.boot.properties.SecurityProperties;
 import com.stark.jarvis.security.core.util.Utils;
 
 /**
- * 抽象的 session 失效处理器。
+ * 抽象的 session 处理策略。
  * @author Ben
  * @since 1.0.0
  * @version 1.0.0
@@ -49,8 +49,8 @@ public class AbstractSessionStrategy {
 	private boolean createNewSession = true;
 
 	/**
-	 * @param invalidSessionUrl
-	 * @param invalidSessionHtmlUrl
+	 * 构造一个抽象的 session 处理策略。
+	 * @param securityPropertie jarvis 安全配置对象。
 	 */
 	public AbstractSessionStrategy(SecurityProperties securityPropertie) {
 		String invalidSessionUrl = securityPropertie.getBrowser().getSession().getSessionInvalidUrl();
@@ -88,10 +88,11 @@ public class AbstractSessionStrategy {
 	}
 
 	/**
-	 * @param request
-	 * @return
+	 * 构建响应内容。
+	 * @param request HTTP 请求对象。
+	 * @return {@link SimpleResponse} 对象。
 	 */
-	protected Object buildResponseContent(HttpServletRequest request) {
+	protected SimpleResponse buildResponseContent(HttpServletRequest request) {
 		String message = "session已失效";
 		if (isConcurrency()) {
 			message = message + "，可能由于并发登录导致";
@@ -100,8 +101,8 @@ public class AbstractSessionStrategy {
 	}
 
 	/**
-	 * session失效是否是并发导致的
-	 * @return
+	 * session 失效是否是并发导致。
+	 * @return 是返回 true ，不是返回 false 。
 	 */
 	protected boolean isConcurrency() {
 		return false;

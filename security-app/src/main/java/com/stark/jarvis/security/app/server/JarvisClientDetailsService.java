@@ -15,7 +15,7 @@ public interface JarvisClientDetailsService extends ClientDetailsService {
 
 	/**
 	 * 获取所有客户端。
-	 * @return
+	 * @return 所有客户端列表。
 	 */
 	List<ClientDetails> getClients();
 	

@@ -13,7 +13,7 @@ public interface AuthorizeConfigProvider {
 	
 	/**
 	 * 配置授权。
-	 * @param config
+	 * @param config 基于 url 过滤的授权配置器。
 	 * @return 返回的 boolean 表示配置中是否有针对 anyRequest 的配置。在整个授权配置中，
 	 * 应该有且仅有一个针对 anyRequest 的配置，如果所有的实现都没有针对 anyRequest 的配置，
 	 * 系统会自动增加一个 anyRequest().authenticated() 的配置。如果有多个针对 anyRequest

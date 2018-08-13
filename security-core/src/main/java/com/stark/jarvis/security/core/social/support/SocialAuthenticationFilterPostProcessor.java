@@ -12,7 +12,7 @@ public interface SocialAuthenticationFilterPostProcessor {
 	
 	/**
 	 * 登录成功后进行业务处理。
-	 * @param socialAuthenticationFilter
+	 * @param socialAuthenticationFilter {@link SocialAuthenticationFilter} 接口的实现。
 	 */
 	void process(SocialAuthenticationFilter socialAuthenticationFilter);
 

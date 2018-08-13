@@ -58,7 +58,7 @@ public class SocialConfig extends SocialConfigurerAdapter {
 	
 	/**
 	 * 社交登录配置类，供浏览器或 app 模块引入设计登录配置用。
-	 * @return
+	 * @return {@link SpringSocialConfigurer} 接口的实现。
 	 */
 	@Bean
 	public SpringSocialConfigurer jarvisSocialSecurityConfig() {
@@ -70,8 +70,8 @@ public class SocialConfig extends SocialConfigurerAdapter {
 
 	/**
 	 * 用来处理注册流程的工具类。
-	 * @param connectionFactoryLocator
-	 * @return
+	 * @param connectionFactoryLocator 连接工厂定位器，用于获取指定厂商的连接工厂。
+	 * @return {@link ProviderSignInUtils} 对象。
 	 */
 	@Bean
 	public ProviderSignInUtils providerSignInUtils(ConnectionFactoryLocator connectionFactoryLocator) {

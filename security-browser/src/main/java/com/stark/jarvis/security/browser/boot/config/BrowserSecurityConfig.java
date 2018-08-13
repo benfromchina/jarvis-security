@@ -89,8 +89,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	/**
-	 * 记住我功能的token存取器配置
-	 * @return
+	 * 记住我功能的 token 存取器。
+	 * @return 记住我功能的 token 存取器。
 	 */
 	@Bean
 	public PersistentTokenRepository persistentTokenRepository() {

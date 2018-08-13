@@ -12,8 +12,8 @@ public interface ValidateCodeGenerator {
 
 	/**
 	 * 生成验证码。
-	 * @param request
-	 * @return
+	 * @param request HTTP 请求对象。
+	 * @return 验证码。
 	 */
 	ValidateCode generate(ServletWebRequest request);
 	

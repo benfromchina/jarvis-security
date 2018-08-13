@@ -53,8 +53,8 @@ public class BrowserSecurityController extends SocialController {
 	 * 身份认证控制器。
 	 * @param request HTTP 请求对象。
 	 * @param response HTTP 响应对象。
-	 * @return
-	 * @throws IOException
+	 * @return 简单响应对象。
+	 * @throws IOException 重定向请求时抛出异常。
 	 */
 	@GetMapping(SecurityConstants.UNAUTHENTICATION_URL)
 	@ResponseStatus(code = HttpStatus.UNAUTHORIZED)
@@ -82,8 +82,8 @@ public class BrowserSecurityController extends SocialController {
 	
 	/**
 	 * 用户第一次社交登录时，会引导用户进行用户注册或绑定，此服务用于在注册或绑定页面获取社交网站用户信息。
-	 * @param request
-	 * @return
+	 * @param request HTTP 请求对象。
+	 * @return 社交用户信息。
 	 */
 	@GetMapping(SecurityConstants.DEFAULT_SOCIAL_USER_INFO_URL)
 	public SocialUserInfo getSocialUserInfo(HttpServletRequest request) {
