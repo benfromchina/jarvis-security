@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.stark.jarvis.security</groupId>
+		<artifactId>security</artifactId>
+		<version>${com.stark.jarvis.security.version}</version>
+		<relativePath>../security</relativePath>
+	</parent>
+
+	<artifactId>security-app</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.stark.jarvis.security</groupId>
+			<artifactId>security-core</artifactId>
+			<version>${com.stark.jarvis.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-jwt</artifactId>
+		</dependency>
+	</dependencies>
+</project>
