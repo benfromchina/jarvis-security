@@ -5,7 +5,7 @@
 
 	<groupId>com.stark.jarvis.security</groupId>
 	<artifactId>security</artifactId>
-	<version>${com.stark.jarvis.security.version}</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<parent>
@@ -92,4 +92,17 @@
 		<module>../security-browser</module>
 		<module>../security-core</module>
 	</modules>
+	
+	<distributionManagement>
+		<repository>
+			<id>nexus</id>
+			<name>Releases</name>
+			<url>http://218.58.62.115:18081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus</id>
+			<name>Snapshots</name>
+			<url>http://218.58.62.115:18081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
