@@ -3,7 +3,6 @@ package com.stark.jarvis.security.social.qq.client.userinfo;
 import java.util.Map;
 
 import org.apache.commons.collections4.MapUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +10,7 @@ import com.stark.jarvis.security.social.client.userinfo.DefaultOAuth2UserDetails
 import com.stark.jarvis.security.social.client.userinfo.DefaultUserConnection;
 import com.stark.jarvis.security.social.client.userinfo.OAuth2UserConverterProvider;
 import com.stark.jarvis.security.social.client.userinfo.UserConnectionForm;
+import com.stark.jarvis.security.social.qq.properties.Constants;
 
 /**
  * QQ用户转换器。
@@ -21,12 +21,11 @@ import com.stark.jarvis.security.social.client.userinfo.UserConnectionForm;
  * @see <a href="https://wiki.connect.qq.com/get_user_info">get_user_info</a>
  */
 @Component
-@ConditionalOnMissingBean(name = "qqUserConverterProvider")
 public class QQUserConverterProvider implements OAuth2UserConverterProvider {
 
 	@Override
 	public boolean supports(ClientRegistration clientRegistration) {
-		return "qq".equalsIgnoreCase(clientRegistration.getRegistrationId());
+		return Constants.REGISTRATION_ID.equalsIgnoreCase(clientRegistration.getRegistrationId());
 	}
 
 	/**

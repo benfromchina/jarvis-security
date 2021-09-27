@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.stark.jarvis.security.core.config.OAuth2LoginCustomizer;
 import com.stark.jarvis.security.core.properties.SecurityProperties;
 import com.stark.jarvis.security.social.authentication.RestfulAuthenticationSuccessHandler;
+import com.stark.jarvis.security.social.client.endpoint.OAuth2AccessTokenResponseClientProviderManager;
 import com.stark.jarvis.security.social.client.web.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.stark.jarvis.security.social.client.web.OAuth2AccessTokenResponseConverterProviderManager;
 import com.stark.jarvis.security.social.client.web.OAuth2AuthorizationCodeGrantRequestEntityConverterProviderManager;
@@ -22,6 +23,8 @@ public class OAuth2LoginCustomizerImpl implements OAuth2LoginCustomizer {
 	
 	@Autowired
 	private ClientRegistrationRepository clientRegistrationRepository;
+	@Autowired
+	private OAuth2AccessTokenResponseClientProviderManager oauth2AccessTokenResponseClientProviderManager;
 	@Autowired
 	private OAuth2AccessTokenResponseConverterProviderManager oauth2AccessTokenResponseConverterManager;
 	@Autowired
@@ -41,7 +44,7 @@ public class OAuth2LoginCustomizerImpl implements OAuth2LoginCustomizer {
 				.authorizationRequestRepository(new HttpCookieOAuth2AuthorizationRequestRepository(securityProperties.getOauth2().getAuthorizationRequestExpirySeconds()))
 				.authorizationRequestResolver(new SocialOAuth2AuthorizationRequestResolver(clientRegistrationRepository, OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI, oauth2AuthorizationRequestEnhancerManager))
 			.and().successHandler(successHandler)
-			.tokenEndpoint().accessTokenResponseClient(new SocialAuthorizationCodeTokenResponseClient(oauth2AuthorizationCodeGrantRequestConverterManager, oauth2AccessTokenResponseConverterManager));
+			.tokenEndpoint().accessTokenResponseClient(new SocialAuthorizationCodeTokenResponseClient(oauth2AuthorizationCodeGrantRequestConverterManager, oauth2AccessTokenResponseConverterManager, oauth2AccessTokenResponseClientProviderManager));
 	}
 
 }

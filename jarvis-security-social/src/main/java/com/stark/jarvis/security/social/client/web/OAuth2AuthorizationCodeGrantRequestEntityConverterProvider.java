@@ -6,6 +6,8 @@ import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCo
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.util.MultiValueMap;
 
+import com.stark.jarvis.security.social.client.ClientProvider;
+
 /**
  * 获取授权码请求转换器。
  * <p>将获取授权码请求对象转换为请求体。
@@ -13,14 +15,7 @@ import org.springframework.util.MultiValueMap;
  * @since 1.0.0
  * @version 1.0.0
  */
-public interface OAuth2AuthorizationCodeGrantRequestEntityConverterProvider {
-	
-	/**
-	 * 该提供者是否支持当前的服务端。
-	 * @param clientRegistration 第三方客户端。
-	 * @return 支持返回 {@literal true} ，否则返回 {@literal false} 。
-	 */
-	boolean supports(ClientRegistration clientRegistration);
+public interface OAuth2AuthorizationCodeGrantRequestEntityConverterProvider extends ClientProvider {
 	
 	/**
 	 * 将获取授权码请求对象转换为请求体。

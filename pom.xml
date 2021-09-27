@@ -153,6 +153,7 @@
 	<modules>
 		<module>jarvis-security-core</module>
 		<module>jarvis-security-social</module>
+		<module>jarvis-security-social-alipay</module>
 		<module>jarvis-security-social-qq</module>
 	</modules>
 </project>

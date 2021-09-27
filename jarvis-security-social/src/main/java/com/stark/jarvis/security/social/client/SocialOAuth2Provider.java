@@ -27,6 +27,25 @@ public enum SocialOAuth2Provider {
 			builder.clientName("QQ");
 			return builder;
 		}
+	},
+	
+	/**
+	 * @see <a href="https://opendocs.alipay.com/open/284/web">PC 网页内获取用户信息</a>
+	 */
+	ALIPAY {
+
+		@Override
+		public Builder getBuilder(String registrationId) {
+			ClientRegistration.Builder builder = getBuilder(registrationId,
+					ClientAuthenticationMethod.BASIC, DEFAULT_REDIRECT_URL);
+			builder.scope("auth_base", "auth_user");
+			builder.authorizationUri("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm");
+			builder.tokenUri("https://openapi.alipay.com/gateway.do");
+			builder.userInfoUri("https://openapi.alipay.com/gateway.do");
+			builder.userNameAttributeName("user_id");
+			builder.clientName("ALIPAY");
+			return builder;
+		}
 	};
 
 	private static final String DEFAULT_REDIRECT_URL = "{baseUrl}/{action}/oauth2/code/{registrationId}";

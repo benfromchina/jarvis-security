@@ -4,6 +4,8 @@ import org.springframework.http.RequestEntity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 
+import com.stark.jarvis.security.social.client.ClientProvider;
+
 /**
  * 用户请求转换器提供者。
  * <p>将获取用户信息请求对象转换为请求体。
@@ -11,14 +13,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
  * @since 1.0.0
  * @version 1.0.0
  */
-public interface OAuth2UserRequestEntityConverterProvider {
-	
-	/**
-	 * 该提供者是否支持当前的服务端。
-	 * @param userRequest 获取用户信息请求对象。
-	 * @return 支持返回 {@literal true} ，否则返回 {@literal false} 。
-	 */
-	boolean supports(OAuth2UserRequest userRequest);
+public interface OAuth2UserRequestEntityConverterProvider extends ClientProvider {
 	
 	/**
 	 * 将获取用户信息请求对象转换为请求体。

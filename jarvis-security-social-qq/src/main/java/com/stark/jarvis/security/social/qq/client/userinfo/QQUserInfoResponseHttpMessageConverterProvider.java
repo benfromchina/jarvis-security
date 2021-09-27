@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stark.jarvis.security.social.client.userinfo.OAuth2UserInfoResponseHttpMessageConverterProvider;
+import com.stark.jarvis.security.social.qq.properties.Constants;
 
 /**
  * QQ获取用户信息响应转换器。
@@ -35,7 +36,7 @@ public class QQUserInfoResponseHttpMessageConverterProvider implements OAuth2Use
 
 	@Override
 	public boolean supports(ClientRegistration clientRegistration) {
-		return "qq".equalsIgnoreCase(clientRegistration.getRegistrationId());
+		return Constants.REGISTRATION_ID.equalsIgnoreCase(clientRegistration.getRegistrationId());
 	}
 
 	@SuppressWarnings("unchecked")

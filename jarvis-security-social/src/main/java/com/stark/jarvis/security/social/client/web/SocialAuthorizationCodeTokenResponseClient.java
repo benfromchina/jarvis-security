@@ -18,23 +18,34 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
+import com.stark.jarvis.security.social.client.endpoint.OAuth2AccessTokenResponseClientProviderManager;
+
 public class SocialAuthorizationCodeTokenResponseClient implements OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> {
 	private static final String INVALID_TOKEN_RESPONSE_ERROR_CODE = "invalid_token_response";
 
 	private OAuth2AuthorizationCodeGrantRequestEntityConverterProviderManager requestEntityConverter;
 
-	private OAuth2AccessTokenResponseConverterProviderManager responseConverterManager;
+	private OAuth2AccessTokenResponseConverterProviderManager responseConverter;
+	
+	private OAuth2AccessTokenResponseClientProviderManager responseClient;
 
 	public SocialAuthorizationCodeTokenResponseClient(OAuth2AuthorizationCodeGrantRequestEntityConverterProviderManager requestEntityConverter,
-			OAuth2AccessTokenResponseConverterProviderManager responseConverterManager) {
+			OAuth2AccessTokenResponseConverterProviderManager responseConverter,
+			OAuth2AccessTokenResponseClientProviderManager responseClient) {
 		this.requestEntityConverter = requestEntityConverter;
-		this.responseConverterManager = responseConverterManager;
+		this.responseConverter = responseConverter;
+		this.responseClient = responseClient;
 	}
 
 	@Override
 	public OAuth2AccessTokenResponse getTokenResponse(OAuth2AuthorizationCodeGrantRequest authorizationCodeGrantRequest) {
 		Assert.notNull(authorizationCodeGrantRequest, "authorizationCodeGrantRequest cannot be null");
 
+		OAuth2AccessTokenResponse tokenResponse = responseClient.getTokenResponse(authorizationCodeGrantRequest);
+		if (tokenResponse != null) {
+			return tokenResponse;
+		}
+		
 		RequestEntity<?> request = this.requestEntityConverter.convert(authorizationCodeGrantRequest);
 		
 		ResponseEntity<OAuth2AccessTokenResponse> response;
@@ -47,7 +58,7 @@ public class SocialAuthorizationCodeTokenResponseClient implements OAuth2AccessT
 			throw new OAuth2AuthorizationException(oauth2Error, ex);
 		}
 
-		OAuth2AccessTokenResponse tokenResponse = response.getBody();
+		tokenResponse = response.getBody();
 
 		if (CollectionUtils.isEmpty(tokenResponse.getAccessToken().getScopes())) {
 			// As per spec, in Section 5.1 Successful Access Token Response
@@ -64,7 +75,7 @@ public class SocialAuthorizationCodeTokenResponseClient implements OAuth2AccessT
 
 	private RestOperations createRestOperations(ClientRegistration clientRegistration) {
 		RestTemplate restTemplate = new RestTemplate(Arrays.asList(
-				new FormHttpMessageConverter(), new OAuth2AccessTokenResponseHttpMessageConverter(clientRegistration, responseConverterManager)));
+				new FormHttpMessageConverter(), new OAuth2AccessTokenResponseHttpMessageConverter(clientRegistration, responseConverter)));
 		restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
 		return restTemplate;
 		

@@ -56,6 +56,8 @@ public class OAuth2UserServiceImpl implements OAuth2UserService<OAuth2UserReques
 	private OAuth2UserConverterProviderManager oauth2UserConverter;
 	@Autowired
 	private OAuth2UserRequestEntityConverterProviderManager requestEntityConverter;
+	@Autowired
+	private OAuth2UserInfoResponseClientProviderManager userInfoResponseClient;
 	@Autowired(required = false)
 	private UserConnectionRepository userConnectionRepository;
 	@Autowired(required = false)
@@ -86,34 +88,37 @@ public class OAuth2UserServiceImpl implements OAuth2UserService<OAuth2UserReques
 			);
 			throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString());
 		}
-
-		RequestEntity<?> request = this.requestEntityConverter.convert(userRequest);
-
-		ResponseEntity<Map<String, Object>> response;
-		try {
-			RestOperations restOperations = createRestOperations(userRequest.getClientRegistration(), userRequest.getAccessToken().getTokenValue());
-			response = restOperations.exchange(request, PARAMETERIZED_RESPONSE_TYPE);
-		} catch (OAuth2AuthorizationException ex) {
-			OAuth2Error oauth2Error = ex.getError();
-			StringBuilder errorDetails = new StringBuilder();
-			errorDetails.append("Error details: [");
-			errorDetails.append("UserInfo Uri: ").append(
-					userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri());
-			errorDetails.append(", Error Code: ").append(oauth2Error.getErrorCode());
-			if (oauth2Error.getDescription() != null) {
-				errorDetails.append(", Error Description: ").append(oauth2Error.getDescription());
+		
+		Map<String, Object> userAttributes = userInfoResponseClient.getUserInfoResponse(userRequest);
+		if (userAttributes == null) {
+			RequestEntity<?> request = this.requestEntityConverter.convert(userRequest);
+	
+			ResponseEntity<Map<String, Object>> response;
+			try {
+				RestOperations restOperations = createRestOperations(userRequest.getClientRegistration(), userRequest.getAccessToken().getTokenValue());
+				response = restOperations.exchange(request, PARAMETERIZED_RESPONSE_TYPE);
+			} catch (OAuth2AuthorizationException ex) {
+				OAuth2Error oauth2Error = ex.getError();
+				StringBuilder errorDetails = new StringBuilder();
+				errorDetails.append("Error details: [");
+				errorDetails.append("UserInfo Uri: ").append(
+						userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri());
+				errorDetails.append(", Error Code: ").append(oauth2Error.getErrorCode());
+				if (oauth2Error.getDescription() != null) {
+					errorDetails.append(", Error Description: ").append(oauth2Error.getDescription());
+				}
+				errorDetails.append("]");
+				oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
+						"An error occurred while attempting to retrieve the UserInfo Resource: " + errorDetails.toString(), null);
+				throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString(), ex);
+			} catch (RestClientException ex) {
+				OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
+						"An error occurred while attempting to retrieve the UserInfo Resource: " + ex.getMessage(), null);
+				throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString(), ex);
 			}
-			errorDetails.append("]");
-			oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
-					"An error occurred while attempting to retrieve the UserInfo Resource: " + errorDetails.toString(), null);
-			throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString(), ex);
-		} catch (RestClientException ex) {
-			OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE,
-					"An error occurred while attempting to retrieve the UserInfo Resource: " + ex.getMessage(), null);
-			throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString(), ex);
+			userAttributes = response.getBody();
 		}
 
-		Map<String, Object> userAttributes = response.getBody();
 		Set<GrantedAuthority> authorities = new LinkedHashSet<>();
 		authorities.add(new OAuth2UserAuthority(userAttributes));
 		OAuth2AccessToken token = userRequest.getAccessToken();

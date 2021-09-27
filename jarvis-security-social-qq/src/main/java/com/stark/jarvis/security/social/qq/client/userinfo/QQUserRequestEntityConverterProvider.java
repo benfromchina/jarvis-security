@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.stark.jarvis.security.social.client.userinfo.OAuth2UserRequestEntityConverterProvider;
+import com.stark.jarvis.security.social.qq.properties.Constants;
 
 /**
  * QQ用户请求转换器。
@@ -26,8 +27,8 @@ import com.stark.jarvis.security.social.client.userinfo.OAuth2UserRequestEntityC
 public class QQUserRequestEntityConverterProvider implements OAuth2UserRequestEntityConverterProvider {
 	
 	@Override
-	public boolean supports(OAuth2UserRequest userRequest) {
-		return "qq".equalsIgnoreCase(userRequest.getClientRegistration().getRegistrationId());
+	public boolean supports(ClientRegistration clientRegistration) {
+		return Constants.REGISTRATION_ID.equalsIgnoreCase(clientRegistration.getRegistrationId());
 	}
 	
 	@Override

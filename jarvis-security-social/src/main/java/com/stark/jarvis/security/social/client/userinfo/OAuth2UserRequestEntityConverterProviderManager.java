@@ -54,7 +54,7 @@ public class OAuth2UserRequestEntityConverterProviderManager implements Converte
 	public RequestEntity<?> convert(OAuth2UserRequest userRequest) {
 		if (CollectionUtils.isNotEmpty(providers)) {
 			for (OAuth2UserRequestEntityConverterProvider provider : providers) {
-				if (provider.supports(userRequest)) {
+				if (provider.supports(userRequest.getClientRegistration())) {
 					return provider.convert(userRequest);
 				}
 			}
