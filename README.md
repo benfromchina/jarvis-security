@@ -17,9 +17,20 @@
     - [支付宝](#支付宝)
     - [开源中国](#开源中国)
 - [基于`jarvis-security-social`快速开发第三方登录](基于jarvis-security-social快速开发第三方登录)
+  - [OAuth2.0流程图](#oauth20流程图)
   - [必选的接口](#必选的接口)
+    - [客户端注册构造器](ClientRegistrationBuilderProvider)
+    - [封装用户信息对象](OAuth2UserConverterProvider)
   - [可选的接口](#可选的接口)
-    - [获取授权码请求](#按流程解释各个接口)
+    - [`1`步骤中获取授权码请求需要对请求参数进行增删改查](OAuth2AuthorizationRequestEnhancerProvider)
+    - [`4.1`步骤中返回的授权码参数名不叫`code`](OAuth2AuthorizationCodeParameterNameProvider)
+    - [`5`步骤中使用授权码获取令牌请求需要对请求参数进行增删改查](OAuth2AuthorizationCodeGrantRequestEntityConverterProvider)
+    - [获取令牌响应参数处理](OAuth2AccessTokenResponseConverterProvider)
+    - [`5`到`6`获取令牌过程自定义](OAuth2AccessTokenResponseClientProvider)
+    - [获取用户信息请求参数自定义](OAuth2UserRequestEntityConverterProvider)
+    - [获取用户信息响应参数处理](OAuth2UserInfoResponseHttpMessageConverterProvider)
+    - [获取用户信息过程自定义](OAuth2UserInfoResponseClientProvider)
+    
 
 ### 介绍
 
