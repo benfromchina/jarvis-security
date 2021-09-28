@@ -69,9 +69,125 @@ jarvis-security                      // 父模块，统一维护依赖版本、�
 
 #### QQ
 
+1. 引入依赖
+
+```xml
+<repositories>
+    <repository>
+        <id>eastsoft-snapshots</id>
+        <name>Eastsoft Snapshots</name>
+        <url>http://218.58.62.115:18081/nexus/repository/snapshots/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.stark</groupId>
+    <artifactId>jarvis-security-social-qq</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+2. 配置参数
+
+```yml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          qq:
+            client-id: xxxxxxxxx
+            client-secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            redirect-uri: http://localhost/login/oauth2/code/qq
+```
+
 #### 支付宝
 
+1. 引入依赖
+
+```xml
+<repositories>
+    <repository>
+        <id>eastsoft-snapshots</id>
+        <name>Eastsoft Snapshots</name>
+        <url>http://218.58.62.115:18081/nexus/repository/snapshots/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.stark</groupId>
+    <artifactId>jarvis-security-social-alipay</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+2. 配置参数
+
+```yml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          alipay:
+            client-id: xxxxxxxxxxxxxxxx
+            redirect-uri: http://localhost/login/oauth2/code/alipay
+            # 私钥文件路径，支持 classpath 或磁盘绝对路径，可选配置（实现PrivateKeySupplier接口）
+            private-key-path: classpath:alipay/应用私钥2048.txt
+            # 支付宝公钥文件路径，支持 classpath 或磁盘绝对路径，可选配置（实现AlipayPublicKeySupplier接口）
+            alipay-public-key-path: classpath:alipay/支付宝公钥2048.txt
+```
+
+3. 自定义获取私钥接口
+
+实现[PrivateKeySupplier](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/security/PrivateKeySupplier.java)接口
+
+4. 自定义获取支付宝公钥接口
+
+实现[AlipayPublicKeySupplier](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/security/AlipayPublicKeySupplier.java)接口
+
 #### 开源中国
+
+1. 引入依赖
+
+```xml
+<repositories>
+    <repository>
+        <id>eastsoft-snapshots</id>
+        <name>Eastsoft Snapshots</name>
+        <url>http://218.58.62.115:18081/nexus/repository/snapshots/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.stark</groupId>
+    <artifactId>jarvis-security-social-oschina</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+2. 配置参数
+
+```yml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          oschina:
+            client-id: xxxxxxxxxxxxxxxxxxxx
+            client-secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            redirect-uri: http://localhost/login/oauth2/code/oschina
+```
 
 ### 基于`jarvis-security-social`快速开发第三方登录
 
