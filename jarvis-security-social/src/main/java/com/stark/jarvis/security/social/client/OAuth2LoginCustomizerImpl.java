@@ -1,11 +1,9 @@
 package com.stark.jarvis.security.social.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.stereotype.Component;
 
@@ -33,8 +31,6 @@ public class OAuth2LoginCustomizerImpl implements OAuth2LoginCustomizer {
 	private OAuth2AuthorizationRequestEnhancerProviderManager oauth2AuthorizationRequestEnhancerManager;
 	@Autowired
 	private OAuth2AuthorizationCodeGrantRequestEntityConverterProviderManager oauth2AuthorizationCodeGrantRequestConverterManager;
-	@Autowired(required = false)
-	private RedisTemplate<Object, Object> redisTemplate;
 	@Autowired
 	private RestfulAuthenticationSuccessHandler successHandler;
 	@Autowired
@@ -45,7 +41,7 @@ public class OAuth2LoginCustomizerImpl implements OAuth2LoginCustomizer {
 		http
 			.clientRegistrationRepository(clientRegistrationRepository)
 			.authorizationEndpoint()
-				.authorizationRequestRepository(redisTemplate != null ? new HttpSessionOAuth2AuthorizationRequestRepository() : new HttpCookieOAuth2AuthorizationRequestRepository(securityProperties.getOauth2().getAuthorizationRequestExpirySeconds()))
+				.authorizationRequestRepository(new HttpCookieOAuth2AuthorizationRequestRepository(securityProperties.getOauth2().getAuthorizationRequestExpirySeconds()))
 				.authorizationRequestResolver(new SocialOAuth2AuthorizationRequestResolver(clientRegistrationRepository, OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI, oauth2AuthorizationRequestEnhancerManager))
 			.and().successHandler(successHandler)
 			.tokenEndpoint().accessTokenResponseClient(new SocialAuthorizationCodeTokenResponseClient(oauth2AuthorizationCodeGrantRequestConverterManager, oauth2AccessTokenResponseConverterManager, oauth2AccessTokenResponseClientProviderManager));
