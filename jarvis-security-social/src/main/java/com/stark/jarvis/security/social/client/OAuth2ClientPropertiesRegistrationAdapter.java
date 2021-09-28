@@ -41,16 +41,19 @@ public final class OAuth2ClientPropertiesRegistrationAdapter {
 	private OAuth2ClientPropertiesRegistrationAdapter() {
 	}
 
-	public static Map<String, ClientRegistration> getClientRegistrations(OAuth2ClientProperties properties) {
+	public static Map<String, ClientRegistration> getClientRegistrations(OAuth2ClientProperties properties, ClientRegistrationBuilderProviderManager clientRegistrationBuilder) {
 		Map<String, ClientRegistration> clientRegistrations = new HashMap<>();
 		properties.getRegistration().forEach((key, value) -> clientRegistrations.put(key,
-				getClientRegistration(key, value, properties.getProvider())));
+				getClientRegistration(key, value, properties.getProvider(), clientRegistrationBuilder)));
 		return clientRegistrations;
 	}
 
 	private static ClientRegistration getClientRegistration(String registrationId,
-			OAuth2ClientProperties.Registration properties, Map<String, Provider> providers) {
+			OAuth2ClientProperties.Registration properties, Map<String, Provider> providers, ClientRegistrationBuilderProviderManager clientRegistrationBuilder) {
 		Builder builder = getBuilderFromIssuerIfPossible(registrationId, properties.getProvider(), providers);
+		if (builder == null) {
+			builder = clientRegistrationBuilder.getBuilder(registrationId);
+		}
 		if (builder == null) {
 			builder = getBuilder(registrationId, properties.getProvider(), providers);
 		}
@@ -84,19 +87,12 @@ public final class OAuth2ClientPropertiesRegistrationAdapter {
 	private static Builder getBuilder(String registrationId, String configuredProviderId,
 			Map<String, Provider> providers) {
 		String providerId = (configuredProviderId != null) ? configuredProviderId : registrationId;
-		CommonOAuth2Provider commonProvider = getCommonProvider(providerId);
-		SocialOAuth2Provider socialProvider = getSocialProvider(providerId);
-		if (commonProvider == null && socialProvider == null && !providers.containsKey(providerId)) {
+		CommonOAuth2Provider provider = getCommonProvider(providerId);
+		if (provider == null && !providers.containsKey(providerId)) {
 			throw new IllegalStateException(getErrorMessage(configuredProviderId, registrationId));
 		}
-		Builder builder;
-		if (commonProvider != null) {
-			builder = commonProvider.getBuilder(registrationId);
-		} else if (socialProvider != null) {
-			builder = socialProvider.getBuilder(registrationId);
-		} else {
-			builder = ClientRegistration.withRegistrationId(registrationId);
-		}
+		Builder builder = (provider != null) ? provider.getBuilder(registrationId)
+				: ClientRegistration.withRegistrationId(registrationId);
 		if (providers.containsKey(providerId)) {
 			return getBuilder(builder, providers.get(providerId));
 		}
@@ -123,15 +119,6 @@ public final class OAuth2ClientPropertiesRegistrationAdapter {
 	private static CommonOAuth2Provider getCommonProvider(String providerId) {
 		try {
 			return ApplicationConversionService.getSharedInstance().convert(providerId, CommonOAuth2Provider.class);
-		}
-		catch (ConversionException ex) {
-			return null;
-		}
-	}
-	
-	private static SocialOAuth2Provider getSocialProvider(String providerId) {
-		try {
-			return ApplicationConversionService.getSharedInstance().convert(providerId, SocialOAuth2Provider.class);
 		}
 		catch (ConversionException ex) {
 			return null;

@@ -12,4 +12,9 @@ public interface Constants {
 	 */
 	String CHARSET = "UTF-8";
 	
+	/**
+	 * 授权码参数名
+	 */
+	String CODE_PARAMETER_NAME = "auth_code";
+	
 }

@@ -38,6 +38,8 @@ import com.stark.jarvis.security.core.properties.SecurityProperties;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired(required = false)
+	private List<HttpSecurityConfigurer> httpSecurityConfigures;
+	@Autowired(required = false)
 	private List<AuthorizeRequestsPermitAllProvider> authorizeRequestsPermitAllProviders;
 	@Autowired(required = false)
 	private OAuth2ClientProperties oauth2ClientProperties;
@@ -84,6 +86,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				http.oauth2Login(oauth2LoginCustomizer);
 			} else {
 				http.oauth2Login();
+			}
+		}
+		
+		if (CollectionUtils.isNotEmpty(httpSecurityConfigures)) {
+			for (HttpSecurityConfigurer configurer : httpSecurityConfigures) {
+				configurer.configure(http);
 			}
 		}
 	}
