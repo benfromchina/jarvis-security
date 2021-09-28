@@ -17,6 +17,9 @@
     - [支付宝](#支付宝)
     - [开源中国](#开源中国)
 - [基于`jarvis-security-social`快速开发第三方登录](基于jarvis-security-social快速开发第三方登录)
+  - [必选的接口](#必选的接口)
+  - [可选的接口](#可选的接口)
+    - [获取授权码请求](#按流程解释各个接口)
 
 ### 介绍
 
@@ -27,7 +30,7 @@
 #### 背景
 
 1. 之前很精致的社交登录框架[Spring Social](https://docs.spring.io/spring-social/docs/1.1.x/reference/htmlsingle/)停止维护，见[Spring Social停止维护声明](https://spring.io/blog/2018/07/03/spring-social-end-of-life-announcement)；
-2. [`Spring Security 5`](https://spring.io/blog/2018/03/06/using-spring-security-5-to-integrate-with-oauth-2-secured-services-such-as-facebook-and-github)作为替代方案，实现了**标准**的`OAuth2.0`协议。但是，国内主流的第三方登录服务提供商如[`QQ`](https://wiki.connect.qq.com/%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c_oauth2-0)、[`支付宝`](https://opendocs.alipay.com/open/284/web)等出于**安全加密**或其他未知的原因都**不是**那么标准，所以没法直接用；
+2. [`Spring Security 5`](https://spring.io/blog/2018/03/06/using-spring-security-5-to-integrate-with-oauth-2-secured-services-such-as-facebook-and-github)作为替代方案，实现了**标准**的`OAuth2.0`协议。但是，国内主流的第三方登录服务提供商如[`QQ`](https://wiki.connect.qq.com/%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c_oauth2-0)、[`支付宝`](https://opendocs.alipay.com/open/284/web)等出于**安全加密**或其他未知的原因都**不是**那么标准（以下简称**不标准**），所以没法直接用；
 3. 公司正好有个刚上码的项目需要用，不妨写一个。
 
 #### 架构
@@ -59,4 +62,32 @@ jarvis-security                      // 父模块，统一维护依赖版本、�
 
 #### 开源中国
 
-### [基于`jarvis-security-social`快速开发第三方登录](基于jarvis-security-social快速开发第三方登录)
+### 基于`jarvis-security-social`快速开发第三方登录
+
+#### 必选的接口
+
+- [ClientRegistrationBuilderProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/ClientRegistrationBuilderProvider.java)
+
+#### 可选的接口
+
+- [OAuth2AuthorizationRequestEnhancerProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationRequestEnhancerProvider.java)
+- [OAuth2AuthorizationCodeGrantRequestEntityConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeGrantRequestEntityConverterProvider.java)
+- [OAuth2AuthorizationCodeParameterNameProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeParameterNameProvider.java)
+
+#### 按流程解释各个接口
+
+1. 实现[ClientRegistrationBuilderProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/ClientRegistrationBuilderProvider.java)接口，提供客户端注册构造器，包含客户端信息。
+
+> 参考[QQClientRegistrationBuilderProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-qq/src/main/java/com/stark/jarvis/security/social/qq/client/QQClientRegistrationBuilderProvider.java)
+
+2. 如果获取授权码请求**不标准**，比如`支付宝`的客户端标识参数名不叫`client_id`而叫`app_id`参数，只需实现[OAuth2AuthorizationRequestEnhancerProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationRequestEnhancerProvider.java)接口。
+
+> 参考[AlipayAuthorizationRequestEnhancerProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/client/web/AlipayAuthorizationRequestEnhancerProvider.java)
+
+3. 如果获取授权码请求返回的响应**不标准**，比如`支付宝`的授权码不叫`code`而叫`auth_code`，只需实现[OAuth2AuthorizationCodeParameterNameProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeParameterNameProvider.java)接口，返回授权码参数名。
+
+> 参考[AlipayAuthorizationCodeParameterNameProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/client/web/AlipayAuthorizationCodeParameterNameProvider.java)
+
+4. 如果使用授权码获取令牌的请求**不标准**，比如`QQ`要返回`json`需要附加`fmt=json`参数，只需实现[OAuth2AuthorizationCodeGrantRequestEntityConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeGrantRequestEntityConverterProvider.java)接口。
+
+> 参考[QQAuthorizationCodeGrantRequestConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-qq/src/main/java/com/stark/jarvis/security/social/qq/client/web/QQAuthorizationCodeGrantRequestConverterProvider.java)
