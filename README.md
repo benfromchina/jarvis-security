@@ -10,26 +10,26 @@
   - [背景](#背景)
   - [架构](#架构)
 - [功能](#功能)
-  - [HttpSecurityConfigurer 替换 WebSecurityConfigurerAdapter 配置 HttpSecurity](httpsecurityconfigurer-替换-websecurityconfigureradapter-配置-httpsecurity)
+  - [HttpSecurityConfigurer 替换 WebSecurityConfigurerAdapter 配置 HttpSecurity](#httpsecurityconfigurer-替换-websecurityconfigureradapter-配置-httpsecurity)
   - [配置不需要认证授权的请求](#配置不需要认证授权的请求)
   - [OAuth2.0第三方登录](#oauth20第三方登录)
     - [QQ](#qq)
     - [支付宝](#支付宝)
     - [开源中国](#开源中国)
-- [基于`jarvis-security-social`快速开发第三方登录](基于jarvis-security-social快速开发第三方登录)
+- [基于`jarvis-security-social`快速开发第三方登录](#基于jarvis-security-social快速开发第三方登录)
   - [OAuth2.0流程图](#oauth20流程图)
   - [必选的接口](#必选的接口)
-    - [客户端注册构造器](ClientRegistrationBuilderProvider)
-    - [封装用户信息对象](OAuth2UserConverterProvider)
+    - [客户端注册构造器](#客户端注册构造器)
+    - [封装用户信息对象](#封装用户信息对象)
   - [可选的接口](#可选的接口)
-    - [`1`步骤中获取授权码请求需要对请求参数进行增删改查](OAuth2AuthorizationRequestEnhancerProvider)
-    - [`4.1`步骤中返回的授权码参数名不叫`code`](OAuth2AuthorizationCodeParameterNameProvider)
-    - [`5`步骤中使用授权码获取令牌请求需要对请求参数进行增删改查](OAuth2AuthorizationCodeGrantRequestEntityConverterProvider)
-    - [`6`步骤中获取令牌响应参数处理](OAuth2AccessTokenResponseConverterProvider)
-    - [`5`到`6`获取令牌过程自定义](OAuth2AccessTokenResponseClientProvider)
-    - [`6.1`步骤中获取用户信息请求参数自定义](OAuth2UserRequestEntityConverterProvider)
-    - [`7`步骤获取用户信息响应参数处理](OAuth2UserInfoResponseHttpMessageConverterProvider)
-    - [`6.1`到`7`获取用户信息过程自定义](OAuth2UserInfoResponseClientProvider)
+    - [`1`步骤中获取授权码请求参数自定义](#1步骤中获取授权码请求参数自定义)
+    - [`4.1`步骤中返回的授权码参数名不叫`code`](#41步骤中返回的授权码参数名不叫code)
+    - [`5`步骤中获取令牌请求参数自定义](#5步骤中获取令牌请求参数自定义)
+    - [`6`步骤中获取令牌响应参数处理](#6步骤中获取令牌响应参数处理)
+    - [`5`到`6`获取令牌过程自定义](#5到6获取令牌过程自定义)
+    - [`6.1`步骤中获取用户信息请求参数自定义](#61步骤中获取用户信息请求参数自定义)
+    - [`7`步骤中获取用户信息响应参数处理](#7步骤中获取用户信息响应参数处理)
+    - [`6.1`到`7`获取用户信息过程自定义](#6.1到7获取用户信息过程自定义)
     
 
 ### 介绍
@@ -241,7 +241,7 @@ spring:
 
 #### 可选的接口
 
-##### `1`步骤中获取授权码请求需要对请求参数自定义
+##### `1`步骤中获取授权码请求参数自定义
 
 实现 [OAuth2AuthorizationRequestEnhancerProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationRequestEnhancerProvider.java) 接口
 
@@ -253,7 +253,7 @@ spring:
 
 > 参考[AlipayAuthorizationCodeParameterNameProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/client/web/AlipayAuthorizationCodeParameterNameProvider.java)
 
-##### `5`步骤中使用授权码获取令牌请求需要对请求参数进行增删改查
+##### `5`步骤中获取令牌请求参数自定义
 
 实现 [OAuth2AuthorizationCodeGrantRequestEntityConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeGrantRequestEntityConverterProvider.java) 接口
 
@@ -297,7 +297,7 @@ public class AkanAccessTokenResponseConverterProvider implements OAuth2AccessTok
 
 > 参考 [QQUserRequestEntityConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-qq/src/main/java/com/stark/jarvis/security/social/qq/client/userinfo/QQUserRequestEntityConverterProvider.java)
 
-##### `7`步骤获取用户信息响应参数处理
+##### `7`步骤中获取用户信息响应参数处理
 
 实现 [OAuth2UserInfoResponseHttpMessageConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/userinfo/OAuth2UserInfoResponseHttpMessageConverterProvider.java) 接口
 
