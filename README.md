@@ -102,21 +102,10 @@ public class AuthorizeRequestsPermitAll implements AuthorizeRequestsPermitAllPro
 1. 引入依赖
 
 ```xml
-<repositories>
-    <repository>
-        <id>eastsoft-snapshots</id>
-        <name>Eastsoft Snapshots</name>
-        <url>http://218.58.62.115:18081/nexus/repository/snapshots/</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-</repositories>
-
 <dependency>
-    <groupId>com.stark</groupId>
+    <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security-social-qq</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -139,21 +128,10 @@ spring:
 1. 引入依赖
 
 ```xml
-<repositories>
-    <repository>
-        <id>eastsoft-snapshots</id>
-        <name>Eastsoft Snapshots</name>
-        <url>http://218.58.62.115:18081/nexus/repository/snapshots/</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-</repositories>
-
 <dependency>
-    <groupId>com.stark</groupId>
+    <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security-social-alipay</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -187,21 +165,10 @@ spring:
 1. 引入依赖
 
 ```xml
-<repositories>
-    <repository>
-        <id>eastsoft-snapshots</id>
-        <name>Eastsoft Snapshots</name>
-        <url>http://218.58.62.115:18081/nexus/repository/snapshots/</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-</repositories>
-
 <dependency>
-    <groupId>com.stark</groupId>
+    <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security-social-oschina</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
