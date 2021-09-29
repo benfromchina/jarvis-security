@@ -1,3 +1,5 @@
+[![](https://img.shields.io/badge/maven%20central-v1.0.0-brightgreen)](https://search.maven.org/artifact/io.github.benfromchina/jarvis-security)
+[![](https://img.shields.io/badge/release-v1.0.0-blue)](https://gitee.com/jarvis-lib/jarvis-security/releases/v1.0.0)
 [![](https://img.shields.io/badge/Java-8-9cf)](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html)
 [![](https://img.shields.io/badge/Spring%20Boot-2.2.6.RELEASE-blue)](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/html/)
 [![](https://img.shields.io/badge/Spring%20Cloud-Hoxton.SR4-brightgreen)]()
@@ -30,7 +32,7 @@
     - [`6.1`步骤中获取用户信息请求参数自定义](#61步骤中获取用户信息请求参数自定义)
     - [`7`步骤中获取用户信息响应参数处理](#7步骤中获取用户信息响应参数处理)
     - [`6.1`到`7`获取用户信息过程自定义](#61到7获取用户信息过程自定义)
-    
+    - [持久化用户第三方登录信息](#持久化用户第三方登录信息)
 
 ### 介绍
 
@@ -277,3 +279,39 @@ public class AkanAccessTokenResponseConverterProvider implements OAuth2AccessTok
 实现 [OAuth2UserInfoResponseClientProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/userinfo/OAuth2UserInfoResponseClientProvider.java) 接口
 
 > 参考 [AlipayUserInfoResponseClientProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/client/userinfo/AlipayUserInfoResponseClientProvider.java)
+
+##### 持久化用户第三方登录信息
+
+实现 [UserConnectionRepository](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/userinfo/UserConnectionRepository.java) 接口
+
+```java
+@Service
+public class UserConnectionServiceImpl implements UserConnectionRepository {
+	
+	@Autowired
+	private UserService userService;
+
+	@Override
+	public UserConnectionForm saveForm(UserConnectionForm form) {
+		OAuth2UserDetails formUser = form.getUser();
+		UserConnection formUserConnection = form.getUserConnection();
+		
+		UserDetailsImpl user = new UserDetailsImpl();
+		BeanUtils.copyProperties(formUser, user);
+		UserConnectionImpl userConnection = new UserConnectionImpl();
+		BeanUtils.copyProperties(formUserConnection, userConnection);
+		if (userConnection.getUserId() == null) {
+			userConnection.setUserId(0l);
+		}
+		
+		com.eastsoft.esstock.core.form.manager.UserConnectionForm savedForm = userService.saveUserConnection(new com.eastsoft.esstock.core.form.manager.UserConnectionForm(user, userConnection));
+		
+		user = new UserDetailsImpl();
+		BeanUtils.copyProperties(savedForm.getUser(), user);
+		userConnection = new UserConnectionImpl();
+		BeanUtils.copyProperties(savedForm.getUserConnection(), userConnection);
+		return new UserConnectionForm(user, userConnection);
+	}
+
+}
+```
