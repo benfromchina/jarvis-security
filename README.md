@@ -10,8 +10,8 @@
   - [背景](#背景)
   - [架构](#架构)
 - [功能](#功能)
+  - [HttpSecurityConfigurer 替换 WebSecurityConfigurerAdapter 配置 HttpSecurity](httpsecurityconfigurer-替换-websecurityconfigureradapter-配置-httpsecurity)
   - [配置不需要认证授权的请求](#配置不需要认证授权的请求)
-  - [实现`HttpSecurityConfigurer`接口直接配置`HttpSecurity`](#实现httpsecurityconfigurer接口直接配置httpsecurity)
   - [OAuth2.0第三方登录](#oauth20第三方登录)
     - [QQ](#qq)
     - [支付宝](#支付宝)
@@ -25,11 +25,11 @@
     - [`1`步骤中获取授权码请求需要对请求参数进行增删改查](OAuth2AuthorizationRequestEnhancerProvider)
     - [`4.1`步骤中返回的授权码参数名不叫`code`](OAuth2AuthorizationCodeParameterNameProvider)
     - [`5`步骤中使用授权码获取令牌请求需要对请求参数进行增删改查](OAuth2AuthorizationCodeGrantRequestEntityConverterProvider)
-    - [获取令牌响应参数处理](OAuth2AccessTokenResponseConverterProvider)
+    - [`6`步骤中获取令牌响应参数处理](OAuth2AccessTokenResponseConverterProvider)
     - [`5`到`6`获取令牌过程自定义](OAuth2AccessTokenResponseClientProvider)
-    - [获取用户信息请求参数自定义](OAuth2UserRequestEntityConverterProvider)
-    - [获取用户信息响应参数处理](OAuth2UserInfoResponseHttpMessageConverterProvider)
-    - [获取用户信息过程自定义](OAuth2UserInfoResponseClientProvider)
+    - [`6.1`步骤中获取用户信息请求参数自定义](OAuth2UserRequestEntityConverterProvider)
+    - [`7`步骤获取用户信息响应参数处理](OAuth2UserInfoResponseHttpMessageConverterProvider)
+    - [`6.1`到`7`获取用户信息过程自定义](OAuth2UserInfoResponseClientProvider)
     
 
 ### 介绍
@@ -57,13 +57,43 @@ jarvis-security                      // 父模块，统一维护依赖版本、�
 
 ### 功能
 
+#### HttpSecurityConfigurer 替换 WebSecurityConfigurerAdapter 配置 HttpSecurity
+
+1. 继承 `WebSecurityConfigurerAdapter` 接口配置 `HttpSecurity` 的方式将**失效**！！！
+
+2. 实现 [HttpSecurityConfigurer](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-core/src/main/java/com/stark/jarvis/security/core/config/HttpSecurityConfigurer.java) 接口来配置 `HttpSecurity`。
+
 #### 配置不需要认证授权的请求
 
 1. 配置文件方式
 
+```yml
+spring:
+  security:
+    authorize-requests:
+      permit-all:
+      - http-method: GET
+        path: /actuator/health,/actuator/hystrix.stream
+```
+
 2. 实现`AuthorizeRequestsPermitAllProvider`接口
 
-#### 实现`HttpSecurityConfigurer`接口直接配置`HttpSecurity`
+```java
+@Component
+public class AuthorizeRequestsPermitAll implements AuthorizeRequestsPermitAllProvider {
+
+	@Override
+	public List<Request> getRequests() {
+		List<Request> requests = new ArrayList<>();
+		// 指定请求方式
+		requests.add(new Request("GET", "/actuator/health"));
+		// 所有请求方式
+		requests.add(new Request("/actuator/hystrix.stream"));
+		return requests;
+	}
+
+}
+```
 
 ### OAuth2.0第三方登录
 
@@ -146,11 +176,11 @@ spring:
 
 3. 自定义获取私钥接口
 
-实现[PrivateKeySupplier](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/security/PrivateKeySupplier.java)接口
+实现 [PrivateKeySupplier](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/security/PrivateKeySupplier.java) 接口
 
 4. 自定义获取支付宝公钥接口
 
-实现[AlipayPublicKeySupplier](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/security/AlipayPublicKeySupplier.java)接口
+实现 [AlipayPublicKeySupplier](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/security/AlipayPublicKeySupplier.java) 接口
 
 #### 开源中国
 
@@ -191,30 +221,90 @@ spring:
 
 ### 基于`jarvis-security-social`快速开发第三方登录
 
+#### OAuth2.0流程图
+
+<img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ff1.market.xiaomi.com%2Fdownload%2FMiPass%2F0f45243d348759584109cd6820a4bfb517342805a%2Fpassport_oauth_authorization_code.png&refer=http%3A%2F%2Ff1.market.xiaomi.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1635470749&t=42c473b899798543c4a1699978c22038" width="627" height="292">
+
 #### 必选的接口
 
-- [ClientRegistrationBuilderProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/ClientRegistrationBuilderProvider.java)
+##### 客户端注册构造器
+
+实现 [ClientRegistrationBuilderProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/ClientRegistrationBuilderProvider.java)
+
+> 参考 [OschinaClientRegistrationBuilderProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-oschina/src/main/java/com/stark/jarvis/security/social/oschina/client/OschinaClientRegistrationBuilderProvider.java)
+
+##### 封装用户信息对象
+
+实现 [OAuth2UserConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/userinfo/OAuth2UserConverterProvider.java)
+
+> 参考 [QQUserConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-qq/src/main/java/com/stark/jarvis/security/social/qq/client/userinfo/QQUserConverterProvider.java)
 
 #### 可选的接口
 
-- [OAuth2AuthorizationRequestEnhancerProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationRequestEnhancerProvider.java)
-- [OAuth2AuthorizationCodeGrantRequestEntityConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeGrantRequestEntityConverterProvider.java)
-- [OAuth2AuthorizationCodeParameterNameProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeParameterNameProvider.java)
+##### `1`步骤中获取授权码请求需要对请求参数自定义
 
-#### 按流程解释各个接口
+实现 [OAuth2AuthorizationRequestEnhancerProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationRequestEnhancerProvider.java) 接口
 
-1. 实现[ClientRegistrationBuilderProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/ClientRegistrationBuilderProvider.java)接口，提供客户端注册构造器，包含客户端信息。
+> 参考 [AlipayAuthorizationRequestEnhancerProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/client/web/AlipayAuthorizationRequestEnhancerProvider.java)
 
-> 参考[QQClientRegistrationBuilderProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-qq/src/main/java/com/stark/jarvis/security/social/qq/client/QQClientRegistrationBuilderProvider.java)
+##### `4.1`步骤中返回的授权码参数名不叫`code`
 
-2. 如果获取授权码请求**不标准**，比如`支付宝`的客户端标识参数名不叫`client_id`而叫`app_id`参数，只需实现[OAuth2AuthorizationRequestEnhancerProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationRequestEnhancerProvider.java)接口。
-
-> 参考[AlipayAuthorizationRequestEnhancerProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/client/web/AlipayAuthorizationRequestEnhancerProvider.java)
-
-3. 如果获取授权码请求返回的响应**不标准**，比如`支付宝`的授权码不叫`code`而叫`auth_code`，只需实现[OAuth2AuthorizationCodeParameterNameProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeParameterNameProvider.java)接口，返回授权码参数名。
+实现 [OAuth2AuthorizationCodeParameterNameProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeParameterNameProvider.java) 接口
 
 > 参考[AlipayAuthorizationCodeParameterNameProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/client/web/AlipayAuthorizationCodeParameterNameProvider.java)
 
-4. 如果使用授权码获取令牌的请求**不标准**，比如`QQ`要返回`json`需要附加`fmt=json`参数，只需实现[OAuth2AuthorizationCodeGrantRequestEntityConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeGrantRequestEntityConverterProvider.java)接口。
+##### `5`步骤中使用授权码获取令牌请求需要对请求参数进行增删改查
+
+实现 [OAuth2AuthorizationCodeGrantRequestEntityConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AuthorizationCodeGrantRequestEntityConverterProvider.java) 接口
 
 > 参考[QQAuthorizationCodeGrantRequestConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-qq/src/main/java/com/stark/jarvis/security/social/qq/client/web/QQAuthorizationCodeGrantRequestConverterProvider.java)
+
+##### `6`步骤中获取令牌响应参数处理
+
+实现 [OAuth2AccessTokenResponseConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/web/OAuth2AccessTokenResponseConverterProvider.java) 接口
+
+```java
+@Component
+public class AkanAccessTokenResponseConverterProvider implements OAuth2AccessTokenResponseConverterProvider {
+
+	@Override
+	public boolean supports(ClientRegistration clientRegistration) {
+		return Constants.REGISTRATION_ID.equalsIgnoreCase(clientRegistration.getRegistrationId());
+	}
+
+	@Override
+	public OAuth2AccessTokenResponse convert(ClientRegistration clientRegistration, Map<String, String> tokenResponseParameters) {
+		try {
+			tokenResponseParameters = AkanUtils.getData(tokenResponseParameters, clientRegistration.getClientSecret());
+		} catch (Exception e) {
+			throw new HttpMessageConversionException(e.getMessage(), e);
+		}
+		return convert(tokenResponseParameters);
+	}
+
+}
+```
+
+##### `5`到`6`获取令牌过程自定义
+
+实现 [OAuth2AccessTokenResponseClientProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/endpoint/OAuth2AccessTokenResponseClientProvider.java) 接口
+
+> 参考 [AlipayAccessTokenResponseClientProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/client/endpoint/AlipayAccessTokenResponseClientProvider.java)
+
+##### `6.1`步骤中获取用户信息请求参数自定义
+
+实现 [OAuth2UserRequestEntityConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/userinfo/OAuth2UserRequestEntityConverterProvider.java) 接口
+
+> 参考 [QQUserRequestEntityConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-qq/src/main/java/com/stark/jarvis/security/social/qq/client/userinfo/QQUserRequestEntityConverterProvider.java)
+
+##### `7`步骤获取用户信息响应参数处理
+
+实现 [OAuth2UserInfoResponseHttpMessageConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/userinfo/OAuth2UserInfoResponseHttpMessageConverterProvider.java) 接口
+
+> 参考 [QQUserInfoResponseHttpMessageConverterProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-qq/src/main/java/com/stark/jarvis/security/social/qq/client/userinfo/QQUserInfoResponseHttpMessageConverterProvider.java)
+
+##### `6.1`到`7`获取用户信息过程自定义
+
+实现 [OAuth2UserInfoResponseClientProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social/src/main/java/com/stark/jarvis/security/social/client/userinfo/OAuth2UserInfoResponseClientProvider.java) 接口
+
+> 参考 [AlipayUserInfoResponseClientProvider](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-social-alipay/src/main/java/com/stark/jarvis/security/social/alipay/client/userinfo/AlipayUserInfoResponseClientProvider.java)
