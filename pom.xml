@@ -8,10 +8,14 @@
 		<version>2.2.6.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.stark</groupId>
+	<groupId>io.github.benfromchina</groupId>
 	<artifactId>jarvis-security</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
+	
+	<name>jarvis-security</name>
+	<description>A security framework for stateless backend service based on Spring Security 5.</description>
+	<url>https://github.com/benfromchina/jarvis-security</url>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,6 +28,9 @@
 		<commons-io.version>2.11.0</commons-io.version>
 		<commons-lang3.version>3.12.0</commons-lang3.version>
 		<commons-net.version>3.8.0</commons-net.version>
+		<jarvis-security-core.version>1.0.0</jarvis-security-core.version>
+		<jarvis-security-social.version>1.0.0</jarvis-security-social.version>
+		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
 		<maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<spring-boot.version>2.2.6.RELEASE</spring-boot.version>
@@ -82,8 +89,41 @@
 				<artifactId>commons-lang3</artifactId>
 				<version>${commons-lang3.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>io.github.benfromchina</groupId>
+				<artifactId>jarvis-security-core</artifactId>
+				<version>${jarvis-security-core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.benfromchina</groupId>
+				<artifactId>jarvis-security-social</artifactId>
+				<version>${jarvis-security-social.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
+	<developers>
+		<developer>
+			<id>mengbin</id>
+			<name>mengbin</name>
+			<email>mengbin@hotmail.com</email>
+			<url>https://github.com/benfromchina</url>
+		</developer>
+	</developers>
+	
+	<scm>
+		<url>https://github.com/benfromchina/jarvis-security.git</url>
+		<connection>scm:git:https://github.com/benfromchina/jarvis-security.git</connection>
+	</scm>
+	
+	<licenses>
+		<license>
+			<name>Apache-2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
 
 	<build>
 		<plugins>
@@ -94,6 +134,10 @@
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -133,21 +177,33 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>${maven-gpg-plugin.version}</version>
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
 
 	<distributionManagement>
-		<repository>
-			<id>nexus</id>
-			<name>Releases</name>
-			<url>http://218.58.62.115:18081/nexus/repository/releases/</url>
-		</repository>
 		<snapshotRepository>
-			<id>nexus</id>
-			<name>Snapshots</name>
-			<url>http://218.58.62.115:18081/nexus/repository/snapshots/</url>
+			<id>sonatype</id>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
 		</snapshotRepository>
+		<repository>
+			<id>sonatype</id>
+			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
 	</distributionManagement>
 	
 	<modules>
