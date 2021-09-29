@@ -3,7 +3,11 @@ package com.stark.jarvis.security.core.properties;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 请求授权配置项。
@@ -18,6 +22,9 @@ public class AuthorizeRequestsProperties {
 	private List<Request> permitAll = new ArrayList<>();
 	
 	@Data
+	@NoArgsConstructor
+	@RequiredArgsConstructor
+	@AllArgsConstructor
 	public static class Request {
 		
 		/**
@@ -36,6 +43,7 @@ public class AuthorizeRequestsProperties {
 		private String httpMethod;
 		
 		/** 请求路径，支持 ant 表达式，多个以 "," 隔开 */
+		@NonNull
 		private String path;
 		
 	}
