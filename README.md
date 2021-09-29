@@ -29,7 +29,7 @@
     - [`5`到`6`获取令牌过程自定义](#5到6获取令牌过程自定义)
     - [`6.1`步骤中获取用户信息请求参数自定义](#61步骤中获取用户信息请求参数自定义)
     - [`7`步骤中获取用户信息响应参数处理](#7步骤中获取用户信息响应参数处理)
-    - [`6.1`到`7`获取用户信息过程自定义](#6.1到7获取用户信息过程自定义)
+    - [`6.1`到`7`获取用户信息过程自定义](#61到7获取用户信息过程自定义)
     
 
 ### 介绍
@@ -224,6 +224,8 @@ spring:
 #### OAuth2.0流程图
 
 <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ff1.market.xiaomi.com%2Fdownload%2FMiPass%2F0f45243d348759584109cd6820a4bfb517342805a%2Fpassport_oauth_authorization_code.png&refer=http%3A%2F%2Ff1.market.xiaomi.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1635470749&t=42c473b899798543c4a1699978c22038" width="627" height="292">
+
+> 注：以下接口描述中的数字与图中对应。
 
 #### 必选的接口
 
