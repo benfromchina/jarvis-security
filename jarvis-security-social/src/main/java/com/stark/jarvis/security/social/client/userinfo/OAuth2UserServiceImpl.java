@@ -59,7 +59,7 @@ public class OAuth2UserServiceImpl implements OAuth2UserService<OAuth2UserReques
 	@Autowired
 	private OAuth2UserInfoResponseClientProviderManager userInfoResponseClient;
 	@Autowired(required = false)
-	private UserConnectionRepository userConnectionRepository;
+	private UserConnectionRepository<? extends OAuth2UserDetails, ? extends UserConnection> userConnectionRepository;
 	@Autowired(required = false)
 	private UsernameEnhancer usernameEnhancer;
 	
@@ -126,18 +126,22 @@ public class OAuth2UserServiceImpl implements OAuth2UserService<OAuth2UserReques
 			authorities.add(new SimpleGrantedAuthority("SCOPE_" + authority));
 		}
 		
-		OAuth2UserDetails user;
-		String providerUserId = MapUtils.getString(userAttributes, userNameAttributeName);
-		UserConnectionForm userConnectionForm = oauth2UserConverter.convert(userRequest.getClientRegistration(), userAttributes);
-		if (userConnectionRepository != null) {
-			userConnectionForm = userConnectionRepository.saveForm(userConnectionForm);
+		UserConnectionForm<? extends OAuth2UserDetails, ? extends UserConnection> userConnectionForm = oauth2UserConverter.convert(userRequest.getClientRegistration(), userAttributes);
+		OAuth2UserDetails user = null;
+		if (userConnectionForm != null) {
+			userConnectionForm.getUserConnection().setAccessToken(userRequest.getAccessToken().getTokenValue());
+			if (userConnectionRepository != null) {
+				userConnectionForm = userConnectionRepository.saveForm(userConnectionForm);
+			}
+			user = userConnectionForm.getUser();
+			authorities.addAll(user.getAuthorities());
 		}
-		user = userConnectionForm.getUser();
-		
-		authorities.addAll(user.getAuthorities());
 		DefaultOAuth2UserDetails oauth2UserDetails = new DefaultOAuth2UserDetails(authorities, userAttributes, userNameAttributeName);
-		BeanUtils.copyProperties(user, oauth2UserDetails);
+		if (user != null) {
+			BeanUtils.copyProperties(user, oauth2UserDetails);
+		}
 		if (StringUtils.isEmpty(oauth2UserDetails.getUsername())) {
+			String providerUserId = MapUtils.getString(userAttributes, userNameAttributeName);
 			oauth2UserDetails.setUsername("oauth2:" + registrationId + ":" + providerUserId);
 		}
 		if (usernameEnhancer != null) {

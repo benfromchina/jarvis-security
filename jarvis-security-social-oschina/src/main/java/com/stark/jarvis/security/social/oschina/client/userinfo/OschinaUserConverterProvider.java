@@ -2,11 +2,10 @@ package com.stark.jarvis.security.social.oschina.client.userinfo;
 
 import java.util.Map;
 
-import org.apache.commons.collections4.MapUtils;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.stereotype.Component;
 
-import com.stark.jarvis.security.social.client.userinfo.DefaultOAuth2UserDetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stark.jarvis.security.social.client.userinfo.DefaultUserConnection;
 import com.stark.jarvis.security.social.client.userinfo.OAuth2UserConverterProvider;
 import com.stark.jarvis.security.social.client.userinfo.UserConnectionForm;
@@ -21,7 +20,7 @@ import com.stark.jarvis.security.social.oschina.properties.Constants;
  * @see <a href="https://www.oschina.net/openapi/docs/openapi_user">openapi_user</a>
  */
 @Component
-public class OschinaUserConverterProvider implements OAuth2UserConverterProvider {
+public class OschinaUserConverterProvider implements OAuth2UserConverterProvider<OschinaOAuth2UserDetails, DefaultUserConnection> {
 
 	@Override
 	public boolean supports(ClientRegistration clientRegistration) {
@@ -32,22 +31,25 @@ public class OschinaUserConverterProvider implements OAuth2UserConverterProvider
 	 * @see <a href="https://www.oschina.net/openapi/docs/openapi_user">openapi_user</a>
 	 */
 	@Override
-	public UserConnectionForm convert(ClientRegistration clientRegistration, Map<String, Object> userAttributes) {
-		String id = MapUtils.getString(userAttributes, "id");
-//		String email = MapUtils.getString(userAttributes, "email");
-		String name = MapUtils.getString(userAttributes, "name");
-//		String gender = MapUtils.getString(userAttributes, "gender");		// 性别: male、female
-		String avatar = MapUtils.getString(userAttributes, "avatar");		// 头像
-//		String location = MapUtils.getString(userAttributes, "location");	// 地点，如 "广东 深圳"
-		String url = MapUtils.getString(userAttributes, "url");				// 主页
-		
-		DefaultOAuth2UserDetails user = new DefaultOAuth2UserDetails()
-				.setName(name);
-		DefaultUserConnection userConnection = new DefaultUserConnection(clientRegistration.getRegistrationId(), id)
-				.setDisplayName(name)
-				.setImageUrl(avatar)
-				.setProfileUrl(url);
-		return new UserConnectionForm(user, userConnection);
+	public UserConnectionForm<OschinaOAuth2UserDetails, DefaultUserConnection> convert(ClientRegistration clientRegistration, Map<String, Object> userAttributes) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String json;
+		try {
+			json = objectMapper.writeValueAsString(userAttributes);
+		} catch (Exception e) {
+			throw new RuntimeException("Serialize userAttributes error", e);
+		}
+		OschinaOAuth2UserDetails user;
+		try {
+			user = objectMapper.readValue(json, OschinaOAuth2UserDetails.class);
+		} catch (Exception e) {
+			throw new RuntimeException("Deserialize userAttributes error", e);
+		}
+		DefaultUserConnection userConnection = new DefaultUserConnection(clientRegistration.getRegistrationId(), user.getId())
+				.setDisplayName(user.getName())
+				.setImageUrl(user.getAvatar())
+				.setProfileUrl(user.getUrl());
+		return new UserConnectionForm<>(user, userConnection);
 	}
 
 }

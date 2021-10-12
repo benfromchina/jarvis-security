@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.github.benfromchina</groupId>
 		<artifactId>jarvis-security</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 	<artifactId>jarvis-security-social-oschina</artifactId>
 	

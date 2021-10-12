@@ -13,7 +13,7 @@ import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 public class OAuth2UserConverterProviderManager {
 	
 	@Autowired(required = false)
-	private List<OAuth2UserConverterProvider> providers;
+	private List<OAuth2UserConverterProvider<? extends OAuth2UserDetails, ? extends UserConnection>> providers;
 	
 	/**
 	 * 将获取用户请求的响应参数集合转为第三方登录表单。
@@ -21,12 +21,11 @@ public class OAuth2UserConverterProviderManager {
 	 * @param userAttributes 获取用户请求的响应参数。
 	 * @return 第三方登录表单。
 	 */
-	public UserConnectionForm convert(ClientRegistration clientRegistration, Map<String, Object> userAttributes) {
+	public UserConnectionForm<? extends OAuth2UserDetails, ? extends UserConnection> convert(ClientRegistration clientRegistration, Map<String, Object> userAttributes) {
 		if (CollectionUtils.isNotEmpty(providers)) {
-			for (OAuth2UserConverterProvider provider : providers) {
+			for (OAuth2UserConverterProvider<? extends OAuth2UserDetails, ? extends UserConnection> provider : providers) {
 				if (provider.supports(clientRegistration)) {
-					UserConnectionForm form = provider.convert(clientRegistration, userAttributes);
-					return form;
+					return provider.convert(clientRegistration, userAttributes);
 				}
 			}
 		}
