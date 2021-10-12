@@ -28,8 +28,7 @@
 		<commons-io.version>2.11.0</commons-io.version>
 		<commons-lang3.version>3.12.0</commons-lang3.version>
 		<commons-net.version>3.8.0</commons-net.version>
-		<jarvis-security-core.version>1.0.0</jarvis-security-core.version>
-		<jarvis-security-social.version>1.0.1</jarvis-security-social.version>
+		<jarvis-security.version>1.0.1</jarvis-security.version>
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
 		<maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -92,12 +91,12 @@
 			<dependency>
 				<groupId>io.github.benfromchina</groupId>
 				<artifactId>jarvis-security-core</artifactId>
-				<version>${jarvis-security-core.version}</version>
+				<version>${jarvis-security.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.github.benfromchina</groupId>
 				<artifactId>jarvis-security-social</artifactId>
-				<version>${jarvis-security-social.version}</version>
+				<version>${jarvis-security.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
