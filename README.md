@@ -1,5 +1,5 @@
-[![](https://img.shields.io/badge/maven%20central-v1.0.0-brightgreen)](https://search.maven.org/artifact/io.github.benfromchina/jarvis-security)
-[![](https://img.shields.io/badge/release-v1.0.0-blue)](https://gitee.com/jarvis-lib/jarvis-security/releases/v1.0.0)
+[![](https://img.shields.io/badge/maven%20central-v1.0.1-brightgreen)](https://search.maven.org/artifact/io.github.benfromchina/jarvis-security)
+[![](https://img.shields.io/badge/release-v1.0.1-blue)](https://gitee.com/jarvis-lib/jarvis-security/releases/v1.0.0)
 [![](https://img.shields.io/badge/Java-8-9cf)](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html)
 [![](https://img.shields.io/badge/Spring%20Boot-2.2.6.RELEASE-blue)](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/html/)
 [![](https://img.shields.io/badge/Spring%20Cloud-Hoxton.SR4-brightgreen)]()
