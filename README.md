@@ -107,7 +107,7 @@ public class AuthorizeRequestsPermitAll implements AuthorizeRequestsPermitAllPro
 <dependency>
     <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security-social-qq</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -133,7 +133,7 @@ spring:
 <dependency>
     <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security-social-alipay</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -170,7 +170,7 @@ spring:
 <dependency>
     <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security-social-oschina</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
