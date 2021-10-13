@@ -1,5 +1,5 @@
 [![](https://img.shields.io/badge/maven%20central-v1.0.1-brightgreen)](https://search.maven.org/artifact/io.github.benfromchina/jarvis-security)
-[![](https://img.shields.io/badge/release-v1.0.1-blue)](https://github.com/benfromchina/jarvis-security/releases/tag/v1.0.1)
+[![](https://img.shields.io/badge/release-v1.0.1-blue)](https://gitee.com/jarvis-lib/jarvis-security/releases/v1.0.1)
 [![](https://img.shields.io/badge/Java-8-9cf)](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html)
 [![](https://img.shields.io/badge/Spring%20Boot-2.2.6.RELEASE-blue)](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/html/)
 [![](https://img.shields.io/badge/Spring%20Cloud-Hoxton.SR4-brightgreen)]()
@@ -107,7 +107,7 @@ public class AuthorizeRequestsPermitAll implements AuthorizeRequestsPermitAllPro
 <dependency>
     <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security-social-qq</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -133,7 +133,7 @@ spring:
 <dependency>
     <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security-social-alipay</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -170,7 +170,7 @@ spring:
 <dependency>
     <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security-social-oschina</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
