@@ -19,6 +19,7 @@ import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 import com.stark.jarvis.security.social.client.endpoint.OAuth2AccessTokenResponseClientProviderManager;
+import com.stark.jarvis.security.social.support.SkipSslVerificationHttpRequestFactory;
 
 public class SocialAuthorizationCodeTokenResponseClient implements OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> {
 	private static final String INVALID_TOKEN_RESPONSE_ERROR_CODE = "invalid_token_response";
@@ -77,8 +78,8 @@ public class SocialAuthorizationCodeTokenResponseClient implements OAuth2AccessT
 		RestTemplate restTemplate = new RestTemplate(Arrays.asList(
 				new FormHttpMessageConverter(), new OAuth2AccessTokenResponseHttpMessageConverter(clientRegistration, responseConverter)));
 		restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
+		restTemplate.setRequestFactory(new SkipSslVerificationHttpRequestFactory());
 		return restTemplate;
-		
 	}
 	
 }
