@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.stark.jarvis.security.social.alipay.config.AlipayConfig

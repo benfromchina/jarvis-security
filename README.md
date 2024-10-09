@@ -1,69 +1,119 @@
-[![](https://img.shields.io/badge/maven%20central-v1.0.1-brightgreen)](https://search.maven.org/artifact/io.github.benfromchina/jarvis-security)
-[![](https://img.shields.io/badge/release-v1.0.1-blue)](https://gitee.com/jarvis-lib/jarvis-security/releases/v1.0.1)
-[![](https://img.shields.io/badge/Java-8-9cf)](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html)
-[![](https://img.shields.io/badge/Spring%20Boot-2.2.6.RELEASE-blue)](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/html/)
-[![](https://img.shields.io/badge/Spring%20Cloud-Hoxton.SR4-brightgreen)]()
-[![](https://img.shields.io/badge/Spring%20Framework-5.2.6.RELEASE-blueviolet)](https://docs.spring.io/spring-framework/docs/5.2.5.RELEASE/spring-framework-reference/)
+[![](https://img.shields.io/badge/maven%20central-v2.0.2-brightgreen)](https://central.sonatype.com/artifact/io.github.benfromchina/jarvis-security)
+[![](https://img.shields.io/badge/release-v2.0.2-blue)](https://gitee.com/jarvis-lib/jarvis-security/releases/v2.0.2)
+[![](https://img.shields.io/badge/Java-17-9cf)](https://www.oracle.com/cn/java/technologies/downloads/#java17)
+[![](https://img.shields.io/badge/Spring_Authorization_Server-1.3.1-27A0C9)](https://docs.spring.io/spring-authorization-server/reference/index.html)
+[![](https://img.shields.io/badge/Spring%20Boot-3.3.2-blue)](https://github.com/spring-projects/spring-boot/tree/v3.3.2)
+[![](https://img.shields.io/badge/Spring%20Cloud-2023.0.3-brightgreen)](https://docs.spring.io/spring-cloud-release/reference/index.html)
+[![](https://img.shields.io/badge/Spring%20Framework-6.1.11-blueviolet)](https://github.com/spring-projects/spring-framework/tree/v6.1.11)
 
 ### 目录
-
 - [介绍](#介绍)
-  - [简介](#简介)
-  - [背景](#背景)
-  - [架构](#架构)
+    - [简介](#简介)
+    - [架构](#架构)
 - [功能](#功能)
-  - [HttpSecurityConfigurer 替换 WebSecurityConfigurerAdapter 配置 HttpSecurity](#httpsecurityconfigurer-替换-websecurityconfigureradapter-配置-httpsecurity)
-  - [配置不需要认证授权的请求](#配置不需要认证授权的请求)
-  - [OAuth2.0第三方登录](#oauth20第三方登录)
-    - [QQ](#qq)
-    - [支付宝](#支付宝)
-    - [开源中国](#开源中国)
+    - [HttpSecurityConfigurer 替换 WebSecurityConfigurerAdapter 配置 HttpSecurity](#httpsecurityconfigurer-替换-websecurityconfigureradapter-配置-httpsecurity)
+    - [配置不需要认证授权的请求](#配置不需要认证授权的请求)
+    - [OAuth2.0第三方登录](#oauth20第三方登录)
+        - [QQ](#qq)
+        - [支付宝](#支付宝)
+        - [开源中国](#开源中国)
 - [基于`jarvis-security-social`快速开发第三方登录](#基于jarvis-security-social快速开发第三方登录)
-  - [OAuth2.0流程图](#oauth20流程图)
-  - [必选的接口](#必选的接口)
-    - [客户端注册构造器](#客户端注册构造器)
-    - [封装用户信息对象](#封装用户信息对象)
-  - [可选的接口](#可选的接口)
-    - [`1`步骤中获取授权码请求参数自定义](#1步骤中获取授权码请求参数自定义)
-    - [`4.1`步骤中返回的授权码参数名不叫`code`](#41步骤中返回的授权码参数名不叫code)
-    - [`5`步骤中获取令牌请求参数自定义](#5步骤中获取令牌请求参数自定义)
-    - [`6`步骤中获取令牌响应参数处理](#6步骤中获取令牌响应参数处理)
-    - [`5`到`6`获取令牌过程自定义](#5到6获取令牌过程自定义)
-    - [`6.1`步骤中获取用户信息请求参数自定义](#61步骤中获取用户信息请求参数自定义)
-    - [`7`步骤中获取用户信息响应参数处理](#7步骤中获取用户信息响应参数处理)
-    - [`6.1`到`7`获取用户信息过程自定义](#61到7获取用户信息过程自定义)
-    - [持久化用户第三方登录信息](#持久化用户第三方登录信息)
+    - [OAuth2.0流程图](#oauth20流程图)
+    - [必选的接口](#必选的接口)
+        - [客户端注册构造器](#客户端注册构造器)
+        - [封装用户信息对象](#封装用户信息对象)
+    - [可选的接口](#可选的接口)
+        - [`1`步骤中获取授权码请求参数自定义](#1步骤中获取授权码请求参数自定义)
+        - [`4.1`步骤中返回的授权码参数名不叫`code`](#41步骤中返回的授权码参数名不叫code)
+        - [`5`步骤中获取令牌请求参数自定义](#5步骤中获取令牌请求参数自定义)
+        - [`6`步骤中获取令牌响应参数处理](#6步骤中获取令牌响应参数处理)
+        - [`5`到`6`获取令牌过程自定义](#5到6获取令牌过程自定义)
+        - [`6.1`步骤中获取用户信息请求参数自定义](#61步骤中获取用户信息请求参数自定义)
+        - [`7`步骤中获取用户信息响应参数处理](#7步骤中获取用户信息响应参数处理)
+        - [`6.1`到`7`获取用户信息过程自定义](#61到7获取用户信息过程自定义)
+        - [持久化用户第三方登录信息](#持久化用户第三方登录信息)
 
 ### 介绍
 
 #### 简介
 
-`jarvis-security`是一个基于`Spring Security 5`的**无状态**的**后端服务**的**安全框架**，引入相应模块可支持`QQ`、`支付宝`、`开源中国`等第三方登录。基于`jarvis-security-social`模块，可快速开发自定义的第三方`OAuth2.0`协议标准或非标准实现的登录模块。
-
-#### 背景
-
-1. 之前很精致的社交登录框架[Spring Social](https://docs.spring.io/spring-social/docs/1.1.x/reference/htmlsingle/)停止维护，见[Spring Social停止维护声明](https://spring.io/blog/2018/07/03/spring-social-end-of-life-announcement)；
-2. [`Spring Security 5`](https://spring.io/blog/2018/03/06/using-spring-security-5-to-integrate-with-oauth-2-secured-services-such-as-facebook-and-github)作为替代方案，实现了**标准**的`OAuth2.0`协议。但是，国内主流的第三方登录服务提供商如[`QQ`](https://wiki.connect.qq.com/%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c_oauth2-0)、[`支付宝`](https://opendocs.alipay.com/open/284/web)等出于**安全加密**或其他未知的原因都**不是**那么标准（以下简称**不标准**），所以没法直接用；
-3. 公司正好有个刚上码的项目需要用，不妨写一个。
+`jarvis-security`是一个基于`Spring Authorization Server`的**无状态**的**后端服务**的**安全框架**，旨在通过简单的配置，实现`Spring Authorization Server`的功能，并可以简单快速地扩展其他的授权方式。
 
 #### 架构
 
 ```
-jarvis-security                      // 父模块，统一维护依赖版本、公共配置属性、maven 插件配置等，供其他模块引用和继承
-├── jarvis-security-core             // 核心包，底层的安全配置
-├── jarvis-security-social           // OAuth2.0第三方登录核心模块，基于该模块可开发自己的第三方登录
-├── jarvis-security-social-alipay    // 支付宝登录，基于jarvis-security-social模块
-├── jarvis-security-social-oschina   // 开源中国登录，基于jarvis-security-social模块
-└── jarvis-security-social-qq        // QQ登录，基于jarvis-security-social模块
+jarvis-security                                          // 父模块，统一维护依赖版本、公共配置属性、maven 插件配置等，供其他模块引用和继承
+├── jarvis-security-oauth2-authorization-server          // 基于 Spring Authorization Server 实现的授权服务器
+├── jarvis-security-oauth2-authorization-core            // 核心包，基于该模块可扩展自定义的 OAuth2.0 授权方式
+├── jarvis-security-oauth2-authorization-password        // 支持密码模式登录
+├── jarvis-security-oauth2-authorization-sms             // 支持短信验证码模式登录
+└── jarvis-security-oauth2-authorization-wxmp            // 支持微信小程序模式登录
 ```
 
 ### 功能
 
-#### HttpSecurityConfigurer 替换 WebSecurityConfigurerAdapter 配置 HttpSecurity
+#### 配置授权服务器
 
-1. 继承 `WebSecurityConfigurerAdapter` 接口配置 `HttpSecurity` 的方式将**失效**！！！
+1. 引入依赖
 
-2. 实现 [HttpSecurityConfigurer](https://gitee.com/jarvis-lib/jarvis-security/blob/master/jarvis-security-core/src/main/java/com/stark/jarvis/security/core/config/HttpSecurityConfigurer.java) 接口来配置 `HttpSecurity`。
+```xml
+<dependency>
+    <groupId>io.github.benfromchina</groupId>
+    <artifactId>jarvis-security-oauth2-authorization-server</artifactId>
+    <version>2.0.3</version>
+</dependency>
+```
+
+2. 实现 `UsernameUserDetailsServiceProvider` 接口，用于根据用户名获取用户信息
+
+```java
+@Component
+@AllArgsConstructor
+public class UsernameUserDetailsServiceProviderImpl implements UsernameUserDetailsServiceProvider {
+    
+    private final UserService userService;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserDTO user = userService.getByUsername(username).orElseThrow(() -> new UsernameNotFoundException("用户名不存在"));
+        return userToUserDetails(user); // 业务系统用户转换为 UserDetails
+    }
+    
+}
+```
+
+3. 实现 `RegisteredClientRepository` 接口，用于 OAuth2.0 客户端信息存储
+
+```java
+@Component
+@AllArgsConstructor
+public class RegisteredClientServiceImpl implements RegisteredClientRepository {
+
+    private final ClientService clientService;
+
+    @Override
+    public void save(RegisteredClient registeredClient) {
+        // TODO: 保存客户端信息
+    }
+
+    @Override
+    public RegisteredClient findById(String id) {
+        // 注意抛出异常类型必须为 OAuth2AuthenticationException
+        ClientDTO client = clientService.get(id).orElseThrow(() -> new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT));
+        return clientToRegisteredClient(client);    // 业务系统客户端转换为 RegisteredClient
+    }
+
+    @Override
+    public RegisteredClient findByClientId(String clientId) {
+        // 注意抛出异常类型必须为 OAuth2AuthenticationException
+        ClientDTO client = clientService.getByClientId(clientId).orElseThrow(() -> new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT));
+        return clientToRegisteredClient(client);    // 业务系统客户端转换为 RegisteredClient
+    }
+
+}
+```
+
+3. 
 
 #### 配置不需要认证授权的请求
 
@@ -72,43 +122,60 @@ jarvis-security                      // 父模块，统一维护依赖版本、�
 ```yml
 spring:
   security:
-    authorize-requests:
-      permit-all:
-      - http-method: GET
-        path: /actuator/health,/actuator/hystrix.stream
+    permit-all-requests:
+    - path: /actuator/health
+      method: GET
+    - path: /path_all_methods
 ```
 
-2. 实现`AuthorizeRequestsPermitAllProvider`接口
+2. 实现`PermitAllRequestsSupplier`接口
 
 ```java
 @Component
-public class AuthorizeRequestsPermitAll implements AuthorizeRequestsPermitAllProvider {
+public class PermitAllRequestsSupplierImpl implements PermitAllRequestsSupplier {
 
 	@Override
-	public List<Request> getRequests() {
-		List<Request> requests = new ArrayList<>();
+	public List<SecurityProperties.Request> get() {
+		List<SecurityProperties.Request> requests = new ArrayList<>();
 		// 指定请求方式
-		requests.add(new Request("GET", "/actuator/health"));
+		requests.add(new SecurityProperties.Request("/actuator/health", SecurityProperties.HttpMethod.GET));
 		// 所有请求方式
-		requests.add(new Request("/actuator/hystrix.stream"));
+		requests.add(new SecurityProperties.Request("/path_all_methods"));
 		return requests;
 	}
 
 }
 ```
 
-### OAuth2.0第三方登录
+#### 存储授权信息实现强制下线
 
-#### QQ
+实现 `OAuth2AuthorizationService` 接口，除了官方的 `InMemoryOAuth2AuthorizationService` 和 `JdbcOAuth2AuthorizationService` 之外，内置了 `RedisOAuth2AuthorizationService` 。
 
-1. 引入依赖
+```java
+@Configuration
+public class AuthServerConfig {
 
-```xml
-<dependency>
-    <groupId>io.github.benfromchina</groupId>
-    <artifactId>jarvis-security-social-qq</artifactId>
-    <version>1.0.1</version>
-</dependency>
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
+    @Autowired
+    private SecurityProperties securityProperties;
+
+    @Bean
+    public OAuth2AuthorizationService oauth2AuthorizationService() {
+        return new RedisOAuth2AuthorizationService(redisTemplate(), securityProperties);
+    }
+
+    @Bean
+    public RedisTemplate<Object, Object> redisTemplate() {
+        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
+
+}
 ```
 
 2. 配置参数
