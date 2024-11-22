@@ -10,10 +10,7 @@ import com.stark.jarvis.security.oauth2.authentication.util.WebUtils;
 import com.stark.jarvis.security.oauth2.server.authentication.core.PermitAllRequestsSupplier;
 import com.stark.jarvis.security.oauth2.server.authentication.core.TokenCustomizer;
 import com.stark.jarvis.security.oauth2.server.authentication.core.UsernameUserDetailsServiceProvider;
-import com.stark.jarvis.security.oauth2.server.handler.JsonAccessDeniedHandler;
-import com.stark.jarvis.security.oauth2.server.handler.JsonAuthenticationEntryPoint;
-import com.stark.jarvis.security.oauth2.server.handler.JsonAuthenticationFailureHandler;
-import com.stark.jarvis.security.oauth2.server.handler.LoginUrlAuthenticationEntryPoint;
+import com.stark.jarvis.security.oauth2.server.handler.*;
 import com.stark.jarvis.security.oauth2.server.support.exception.ProblemDetailConverter;
 import com.stark.jarvis.security.oauth2.server.properties.SecurityProperties;
 import com.stark.jarvis.security.oauth2.server.support.exception.ExceptionHandler;
@@ -22,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
@@ -78,6 +76,8 @@ import java.util.UUID;
 @Slf4j
 public class AuthorizationServerConfig {
 
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
     @Autowired(required = false)
     private List<AuthenticationConverter> authenticationConverters;
     @Autowired(required = false) @Lazy
@@ -101,7 +101,9 @@ public class AuthorizationServerConfig {
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
                 .tokenEndpoint((tokenEndpoint) -> {
-                    tokenEndpoint.errorResponseHandler(new JsonAuthenticationFailureHandler(exceptionHandlers, problemDetailConverter));
+                    tokenEndpoint
+                            .accessTokenResponseHandler(new OAuth2AccessTokenResponseAuthenticationSuccessHandler(applicationEventPublisher))
+                            .errorResponseHandler(new JsonAuthenticationFailureHandler(exceptionHandlers, problemDetailConverter));
                     if (!CollectionUtils.isEmpty(authenticationConverters)) {
                         authenticationConverters.forEach(tokenEndpoint::accessTokenRequestConverter);
                     }
