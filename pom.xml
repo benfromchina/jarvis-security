@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.2</version>
+        <version>3.3.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -19,6 +19,7 @@
     <modules>
         <module>jarvis-security-oauth2-authorization-core</module>
         <module>jarvis-security-oauth2-authorization-server</module>
+        <module>jarvis-security-oauth2-authorization-exchange</module>
         <module>jarvis-security-oauth2-authorization-password</module>
         <module>jarvis-security-oauth2-authorization-sms-code</module>
         <module>jarvis-security-oauth2-authorization-wxmp</module>

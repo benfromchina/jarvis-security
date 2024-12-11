@@ -40,6 +40,10 @@ public class LoginUrlAuthenticationEntryPoint extends AbstractExceptionHandler i
                     sendErrorResponse(response, authException);
                     return;
                 }
+                if (exceptionClass.isAssignableFrom(authException.getCause().getClass())) {
+                    sendErrorResponse(response, (Exception) authException.getCause());
+                    return;
+                }
             }
         }
 
