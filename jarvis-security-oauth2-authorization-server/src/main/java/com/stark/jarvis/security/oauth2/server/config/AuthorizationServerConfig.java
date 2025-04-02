@@ -70,7 +70,7 @@ import java.util.UUID;
 @Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties(SecurityProperties.class)
-@ComponentScan(basePackages = "com.stark.jarvis.security.oauth2.server", excludeFilters = {
+@ComponentScan(basePackages = "com.stark.jarvis.security.oauth2", excludeFilters = {
         @ComponentScan.Filter(Configuration.class)
 })
 @Slf4j
