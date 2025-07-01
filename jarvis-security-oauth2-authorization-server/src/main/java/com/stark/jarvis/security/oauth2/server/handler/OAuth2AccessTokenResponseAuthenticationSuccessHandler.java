@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import java.io.IOException;
 
 /**
- * 扩展 {@link org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2AccessTokenResponseAuthenticationSuccessHandler OAuth2AccessTokenResponseAuthenticationSuccessHandler}，再写会响应前发布 {@link OAuth2AuthenticationSuccessEvent OAuth2AuthenticationSuccessEvent} 事件。
+ * 扩展 {@link org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2AccessTokenResponseAuthenticationSuccessHandler OAuth2AccessTokenResponseAuthenticationSuccessHandler}，在写回响应前发布 {@link OAuth2AuthenticationSuccessEvent OAuth2AuthenticationSuccessEvent} 事件。
  *
  * @author <a href="mailto:mengbin@hotmail.com">Ben</a>
  * @version 1.0.0

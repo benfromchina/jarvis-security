@@ -60,7 +60,7 @@ jarvis-security                                          // 父模块，统一�
 <dependency>
     <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security-oauth2-authorization-server</artifactId>
-    <version>2.0.3</version>
+    <version>2.0.4</version>
 </dependency>
 ```
 

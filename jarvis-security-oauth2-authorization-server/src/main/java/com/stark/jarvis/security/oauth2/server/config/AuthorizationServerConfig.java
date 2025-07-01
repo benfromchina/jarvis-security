@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.stark.jarvis.security.oauth2.authentication.core.OAuth2ResourceOwnerAuthenticationProvider;
 import com.stark.jarvis.security.oauth2.authentication.core.UserDetailsServiceProvider;
 import com.stark.jarvis.security.oauth2.authentication.util.WebUtils;
 import com.stark.jarvis.security.oauth2.server.authentication.core.PermitAllRequestsSupplier;
@@ -35,6 +36,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.encrypt.KeyStoreKeyFactory;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -81,7 +84,7 @@ public class AuthorizationServerConfig {
     @Autowired(required = false)
     private List<AuthenticationConverter> authenticationConverters;
     @Autowired(required = false) @Lazy
-    private List<AuthenticationProvider> authenticationProviders;
+    private List<OAuth2ResourceOwnerAuthenticationProvider> authenticationProvider;
     @Autowired(required = false)
     private List<ExceptionHandler> exceptionHandlers;
     @Autowired(required = false)
@@ -92,6 +95,8 @@ public class AuthorizationServerConfig {
     private SecurityProperties securityProperties;
     @Autowired(required = false)
     private List<TokenCustomizer> tokenCustomizers;
+    @Autowired(required = false)
+    private List<UserDetailsServiceProvider> userDetailsServiceProviders;
 
     @Bean
     @Order(1)
@@ -107,8 +112,19 @@ public class AuthorizationServerConfig {
                     if (!CollectionUtils.isEmpty(authenticationConverters)) {
                         authenticationConverters.forEach(tokenEndpoint::accessTokenRequestConverter);
                     }
-                    if (!CollectionUtils.isEmpty(authenticationProviders)) {
-                        authenticationProviders.forEach(tokenEndpoint::authenticationProvider);
+                    if (!CollectionUtils.isEmpty(authenticationProvider)) {
+                        authenticationProvider.forEach(authenticationProvider -> tokenEndpoint.authenticationProvider(new AuthenticationProvider() {
+
+                            @Override
+                            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+                                return authenticationProvider.authenticate(authentication);
+                            }
+
+                            @Override
+                            public boolean supports(Class<?> authentication) {
+                                return authenticationProvider.supports(authentication);
+                            }
+                        }));
                     }
                 })
                 .clientAuthentication((clientAuthentication) -> clientAuthentication
@@ -143,6 +159,7 @@ public class AuthorizationServerConfig {
         http
                 .httpBasic(httpBasicCustomizer -> {})
                 .csrf(AbstractHttpConfigurer::disable)
+                .userDetailsService(userDetailsService())
                 .authorizeHttpRequests((authorize) -> {
                     List<SecurityProperties.Request> permitAllRequests = new ArrayList<>();
                     if (!CollectionUtils.isEmpty(securityProperties.getPermitAllRequests())) {
@@ -175,7 +192,7 @@ public class AuthorizationServerConfig {
 
     @Bean
     @Primary
-    public UserDetailsService userDetailsService(List<UserDetailsServiceProvider> userDetailsServiceProviders) {
+    public UserDetailsService userDetailsService() {
         return username -> {
             HttpServletRequest request = WebUtils.getRequest();
             if (request == null) {

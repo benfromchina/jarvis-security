@@ -1,8 +1,8 @@
 package com.stark.jarvis.security.oauth2.authentication.base;
 
+import com.stark.jarvis.security.oauth2.authentication.core.OAuth2ResourceOwnerAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.*;
@@ -34,7 +34,7 @@ import java.util.Set;
  * @since 2024/7/21
  */
 @Slf4j
-public abstract class OAuth2ResourceOwnerBaseAuthenticationProvider implements AuthenticationProvider {
+public abstract class OAuth2ResourceOwnerBaseAuthenticationProvider implements OAuth2ResourceOwnerAuthenticationProvider {
 
     private static final String ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2";
 
