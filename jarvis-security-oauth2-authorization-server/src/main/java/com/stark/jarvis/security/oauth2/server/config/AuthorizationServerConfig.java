@@ -54,12 +54,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -102,52 +106,52 @@ public class AuthorizationServerConfig {
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
             throws Exception {
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
-                .tokenEndpoint((tokenEndpoint) -> {
-                    tokenEndpoint
-                            .accessTokenResponseHandler(new OAuth2AccessTokenResponseAuthenticationSuccessHandler(applicationEventPublisher))
-                            .errorResponseHandler(new JsonAuthenticationFailureHandler(exceptionHandlers, problemDetailConverter));
-                    if (!CollectionUtils.isEmpty(authenticationConverters)) {
-                        authenticationConverters.forEach(tokenEndpoint::accessTokenRequestConverter);
-                    }
-                    if (!CollectionUtils.isEmpty(authenticationProvider)) {
-                        authenticationProvider.forEach(authenticationProvider -> tokenEndpoint.authenticationProvider(new AuthenticationProvider() {
-
-                            @Override
-                            public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-                                return authenticationProvider.authenticate(authentication);
-                            }
-
-                            @Override
-                            public boolean supports(Class<?> authentication) {
-                                return authenticationProvider.supports(authentication);
-                            }
-                        }));
-                    }
-                })
-                .clientAuthentication((clientAuthentication) -> clientAuthentication
-                        .errorResponseHandler(new JsonAuthenticationFailureHandler(exceptionHandlers, problemDetailConverter))
-                );
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+                OAuth2AuthorizationServerConfigurer.authorizationServer();
 
         http
-                .exceptionHandling((exceptions) -> exceptions
+                .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+                .with(authorizationServerConfigurer, authorizationServer -> authorizationServer
+                        .oidc(Customizer.withDefaults())    // Enable OpenID Connect 1.0
+                        .tokenEndpoint(tokenEndpoint -> {
+                            tokenEndpoint
+                                    .accessTokenResponseHandler(new OAuth2AccessTokenResponseAuthenticationSuccessHandler(applicationEventPublisher))   // 登录成功返回 json
+                                    .errorResponseHandler(new JsonAuthenticationFailureHandler(exceptionHandlers, problemDetailConverter));             // 登录失败返回 json
+                            if (!CollectionUtils.isEmpty(authenticationConverters)) {
+                                authenticationConverters.forEach(tokenEndpoint::accessTokenRequestConverter);
+                            }
+                            if (!CollectionUtils.isEmpty(authenticationProvider)) {
+                                authenticationProvider.forEach(authenticationProvider -> tokenEndpoint.authenticationProvider(new AuthenticationProvider() {
+
+                                    @Override
+                                    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+                                        return authenticationProvider.authenticate(authentication);
+                                    }
+
+                                    @Override
+                                    public boolean supports(Class<?> authentication) {
+                                        return authenticationProvider.supports(authentication);
+                                    }
+                                }));
+                            }
+                        })
+                        .clientAuthentication(clientAuthentication -> clientAuthentication
+                                .errorResponseHandler(new JsonAuthenticationFailureHandler(exceptionHandlers, problemDetailConverter))  // 客户端认证失败返回 json
+                        )
+                )
+                .exceptionHandling(exceptions -> exceptions
                         // Redirect to the login page when not authenticated from the
                         // authorization endpoint
                         .defaultAuthenticationEntryPointFor(
                                 new LoginUrlAuthenticationEntryPoint("/login", securityProperties.getExceptionClassesReturnJson(), exceptionHandlers, problemDetailConverter),
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                         )
-                        .defaultAuthenticationEntryPointFor(
+                        .defaultAuthenticationEntryPointFor(    // 请求未认证返回 json
                                 new JsonAuthenticationEntryPoint(exceptionHandlers, problemDetailConverter),
                                 new MediaTypeRequestMatcher(MediaType.APPLICATION_JSON)
                         )
-                        .accessDeniedHandler(new JsonAccessDeniedHandler(exceptionHandlers, problemDetailConverter))
-                )
-                // Accept access tokens for User Info and/or Client Registration
-                .oauth2ResourceServer((resourceServer) -> resourceServer
-                        .jwt(Customizer.withDefaults()));
+                        .accessDeniedHandler(new JsonAccessDeniedHandler(exceptionHandlers, problemDetailConverter))    // 请求未授权返回 json
+                );
 
         return http.build();
     }
@@ -157,13 +161,16 @@ public class AuthorizationServerConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http
-                .httpBasic(httpBasicCustomizer -> {})
                 .csrf(AbstractHttpConfigurer::disable)
                 .userDetailsService(userDetailsService())
-                .authorizeHttpRequests((authorize) -> {
+                .authorizeHttpRequests(authorize -> {
                     List<SecurityProperties.Request> permitAllRequests = new ArrayList<>();
                     if (!CollectionUtils.isEmpty(securityProperties.getPermitAllRequests())) {
-                        permitAllRequests.addAll(securityProperties.getPermitAllRequests());
+                        securityProperties.getPermitAllRequests().forEach(request -> {
+                            if (StringUtils.hasLength(request.getPath())) {
+                                permitAllRequests.add(request);
+                            }
+                        });
                     }
                     if (!CollectionUtils.isEmpty(permitAllRequestsSuppliers)) {
                         permitAllRequestsSuppliers.forEach(permitAllRequestsSupplier -> permitAllRequests.addAll(permitAllRequestsSupplier.get()));
@@ -253,7 +260,11 @@ public class AuthorizationServerConfig {
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtTokenCustomizer() {
         return (context) -> {
             if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
-                context.getClaims().claim("gt", context.getAuthorizationGrantType().getValue());
+                // gty: 授权类型 grantType
+                context.getClaims().claim("gty", context.getAuthorizationGrantType().getValue());
+                // cih: 客户端IP的MD5哈希
+                String clientIp = WebUtils.getClientIp(WebUtils.getRequest());
+                context.getClaims().claim("cih", DigestUtils.md5DigestAsHex(Objects.requireNonNull(clientIp).getBytes(StandardCharsets.UTF_8)));
                 if (!CollectionUtils.isEmpty(tokenCustomizers)) {
                     tokenCustomizers.forEach(tokenCustomizer -> context.getClaims().claims(tokenCustomizer));
                 }
