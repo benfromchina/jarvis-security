@@ -8,6 +8,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import com.stark.jarvis.security.oauth2.authentication.core.OAuth2ResourceOwnerAuthenticationProvider;
 import com.stark.jarvis.security.oauth2.authentication.core.UserDetailsServiceProvider;
 import com.stark.jarvis.security.oauth2.authentication.util.WebUtils;
+import com.stark.jarvis.security.oauth2.server.authentication.core.JWTClaimNamesExtended;
 import com.stark.jarvis.security.oauth2.server.authentication.core.PermitAllRequestsSupplier;
 import com.stark.jarvis.security.oauth2.server.authentication.core.TokenCustomizer;
 import com.stark.jarvis.security.oauth2.server.authentication.core.UsernameUserDetailsServiceProvider;
@@ -261,10 +262,10 @@ public class AuthorizationServerConfig {
         return (context) -> {
             if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
                 // gty: 授权类型 grantType
-                context.getClaims().claim("gty", context.getAuthorizationGrantType().getValue());
+                context.getClaims().claim(JWTClaimNamesExtended.GRANT_TYPE, context.getAuthorizationGrantType().getValue());
                 // cih: 客户端IP的MD5哈希
                 String clientIp = WebUtils.getClientIp(WebUtils.getRequest());
-                context.getClaims().claim("cih", DigestUtils.md5DigestAsHex(Objects.requireNonNull(clientIp).getBytes(StandardCharsets.UTF_8)));
+                context.getClaims().claim(JWTClaimNamesExtended.CLIENT_IP_HASH, DigestUtils.md5DigestAsHex(Objects.requireNonNull(clientIp).getBytes(StandardCharsets.UTF_8)));
                 if (!CollectionUtils.isEmpty(tokenCustomizers)) {
                     tokenCustomizers.forEach(tokenCustomizer -> context.getClaims().claims(tokenCustomizer));
                 }
