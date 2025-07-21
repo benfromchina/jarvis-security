@@ -15,7 +15,9 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
+import org.springframework.util.DigestUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -65,7 +67,7 @@ public class OAuth2ExchangeAuthenticationProvider extends OAuth2ResourceOwnerBas
             throw new OAuth2AuthenticationException(error);
         }
 
-        return new UsernamePasswordAuthenticationToken(username, authorization.getId());
+        return new UsernamePasswordAuthenticationToken(username, DigestUtils.md5DigestAsHex(authorization.getId().getBytes(StandardCharsets.UTF_8)));
     }
 
 }
