@@ -70,7 +70,7 @@ jarvis-security                                          // 父模块，统一�
 @Component
 @AllArgsConstructor
 public class UsernameUserDetailsServiceProviderImpl implements UsernameUserDetailsServiceProvider {
-    
+
     private final UserService userService;
 
     @Override
@@ -78,7 +78,7 @@ public class UsernameUserDetailsServiceProviderImpl implements UsernameUserDetai
         UserDTO user = userService.getByUsername(username).orElseThrow(() -> new UsernameNotFoundException("用户名不存在"));
         return userToUserDetails(user); // 业务系统用户转换为 UserDetails
     }
-    
+
 }
 ```
 
@@ -123,9 +123,9 @@ public class RegisteredClientServiceImpl implements RegisteredClientRepository {
 spring:
   security:
     permit-all-requests:
-    - path: /actuator/health
-      method: GET
-    - path: /path_all_methods
+      - path: /actuator/health
+        method: GET
+      - path: /path_all_methods
 ```
 
 2. 实现`PermitAllRequestsSupplier`接口
@@ -134,15 +134,15 @@ spring:
 @Component
 public class PermitAllRequestsSupplierImpl implements PermitAllRequestsSupplier {
 
-	@Override
-	public List<SecurityProperties.Request> get() {
-		List<SecurityProperties.Request> requests = new ArrayList<>();
-		// 指定请求方式
-		requests.add(new SecurityProperties.Request("/actuator/health", SecurityProperties.HttpMethod.GET));
-		// 所有请求方式
-		requests.add(new SecurityProperties.Request("/path_all_methods"));
-		return requests;
-	}
+    @Override
+    public List<SecurityProperties.Request> get() {
+        List<SecurityProperties.Request> requests = new ArrayList<>();
+        // 指定请求方式
+        requests.add(new SecurityProperties.Request("/actuator/health", SecurityProperties.HttpMethod.GET));
+        // 所有请求方式
+        requests.add(new SecurityProperties.Request("/path_all_methods"));
+        return requests;
+    }
 
 }
 ```
@@ -305,20 +305,20 @@ spring:
 @Component
 public class AkanAccessTokenResponseConverterProvider implements OAuth2AccessTokenResponseConverterProvider {
 
-	@Override
-	public boolean supports(ClientRegistration clientRegistration) {
-		return Constants.REGISTRATION_ID.equalsIgnoreCase(clientRegistration.getRegistrationId());
-	}
+    @Override
+    public boolean supports(ClientRegistration clientRegistration) {
+        return Constants.REGISTRATION_ID.equalsIgnoreCase(clientRegistration.getRegistrationId());
+    }
 
-	@Override
-	public OAuth2AccessTokenResponse convert(ClientRegistration clientRegistration, Map<String, String> tokenResponseParameters) {
-		try {
-			tokenResponseParameters = AkanUtils.getData(tokenResponseParameters, clientRegistration.getClientSecret());
-		} catch (Exception e) {
-			throw new HttpMessageConversionException(e.getMessage(), e);
-		}
-		return convert(tokenResponseParameters);
-	}
+    @Override
+    public OAuth2AccessTokenResponse convert(ClientRegistration clientRegistration, Map<String, String> tokenResponseParameters) {
+        try {
+            tokenResponseParameters = AkanUtils.getData(tokenResponseParameters, clientRegistration.getClientSecret());
+        } catch (Exception e) {
+            throw new HttpMessageConversionException(e.getMessage(), e);
+        }
+        return convert(tokenResponseParameters);
+    }
 
 }
 ```
@@ -354,31 +354,31 @@ public class AkanAccessTokenResponseConverterProvider implements OAuth2AccessTok
 ```java
 @Service
 public class UserConnectionServiceImpl implements UserConnectionRepository {
-	
-	@Autowired
-	private UserService userService;
 
-	@Override
-	public UserConnectionForm saveForm(UserConnectionForm form) {
-		OAuth2UserDetails formUser = form.getUser();
-		UserConnection formUserConnection = form.getUserConnection();
-		
-		UserDetailsImpl user = new UserDetailsImpl();
-		BeanUtils.copyProperties(formUser, user);
-		UserConnectionImpl userConnection = new UserConnectionImpl();
-		BeanUtils.copyProperties(formUserConnection, userConnection);
-		if (userConnection.getUserId() == null) {
-			userConnection.setUserId(0l);
-		}
-		
-		com.eastsoft.esstock.core.form.manager.UserConnectionForm savedForm = userService.saveUserConnection(new com.eastsoft.esstock.core.form.manager.UserConnectionForm(user, userConnection));
-		
-		user = new UserDetailsImpl();
-		BeanUtils.copyProperties(savedForm.getUser(), user);
-		userConnection = new UserConnectionImpl();
-		BeanUtils.copyProperties(savedForm.getUserConnection(), userConnection);
-		return new UserConnectionForm(user, userConnection);
-	}
+    @Autowired
+    private UserService userService;
+
+    @Override
+    public UserConnectionForm saveForm(UserConnectionForm form) {
+        OAuth2UserDetails formUser = form.getUser();
+        UserConnection formUserConnection = form.getUserConnection();
+
+        UserDetailsImpl user = new UserDetailsImpl();
+        BeanUtils.copyProperties(formUser, user);
+        UserConnectionImpl userConnection = new UserConnectionImpl();
+        BeanUtils.copyProperties(formUserConnection, userConnection);
+        if (userConnection.getUserId() == null) {
+            userConnection.setUserId(0l);
+        }
+
+        com.eastsoft.esstock.core.form.manager.UserConnectionForm savedForm = userService.saveUserConnection(new com.eastsoft.esstock.core.form.manager.UserConnectionForm(user, userConnection));
+
+        user = new UserDetailsImpl();
+        BeanUtils.copyProperties(savedForm.getUser(), user);
+        userConnection = new UserConnectionImpl();
+        BeanUtils.copyProperties(savedForm.getUserConnection(), userConnection);
+        return new UserConnectionForm(user, userConnection);
+    }
 
 }
 ```
