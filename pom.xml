@@ -7,14 +7,18 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.3</version>
+        <version>3.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>io.github.benfromchina</groupId>
     <artifactId>jarvis-security</artifactId>
-    <version>2.0.4-SNAPSHOT</version>
+    <version>2.0.4</version>
     <packaging>pom</packaging>
+
+    <name>jarvis-security</name>
+    <description>jarvis-security</description>
+    <url>https://github.com/benfromchina/jarvis-security</url>
 
     <modules>
         <module>jarvis-security-oauth2-authorization-core</module>
@@ -30,8 +34,10 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
-        <oauth2-authorization-core.version>2.0.4-SNAPSHOT</oauth2-authorization-core.version>
+        <!-- jars -->
+        <central-publishing-maven-plugin.version>0.7.0</central-publishing-maven-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+        <oauth2-authorization-core.version>2.0.4</oauth2-authorization-core.version>
         <spring-cloud.version>2025.0.0</spring-cloud.version>
     </properties>
 
@@ -64,6 +70,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint:-options</arg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -74,7 +85,16 @@
                     </delimiters>
                 </configuration>
             </plugin>
-            <!--<plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>${central-publishing-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>${maven-gpg-plugin.version}</version>
@@ -87,7 +107,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -108,8 +128,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <configuration>
-                        <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-                        <doclint>none</doclint>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
                         <charset>UTF-8</charset>
                         <detectLinks>true</detectLinks>
                         <docencoding>UTF-8</docencoding>
@@ -128,22 +147,7 @@
         </pluginManagement>
     </build>
 
-    <!--<distributionManagement>
-        <snapshotRepository>
-            <id>sonatype</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>-->
     <distributionManagement>
-        <repository>
-            <id>nexus</id>
-            <name>Releases</name>
-            <url>http://129.1.50.194:8081/nexus/repository/releases/</url>
-        </repository>
         <snapshotRepository>
             <id>nexus</id>
             <name>Snapshots</name>

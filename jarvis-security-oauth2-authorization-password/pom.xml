@@ -7,12 +7,21 @@
     <parent>
         <groupId>io.github.benfromchina</groupId>
         <artifactId>jarvis-security</artifactId>
-        <version>2.0.4-SNAPSHOT</version>
+        <version>2.0.4</version>
     </parent>
 
     <artifactId>jarvis-security-oauth2-authorization-password</artifactId>
 
+    <name>jarvis-security-oauth2-authorization-password</name>
+    <description>jarvis-security-oauth2-authorization-password</description>
+    <url>https://github.com/benfromchina/jarvis-security</url>
+
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>io.github.benfromchina</groupId>
             <artifactId>jarvis-security-oauth2-authorization-core</artifactId>
