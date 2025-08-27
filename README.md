@@ -113,7 +113,7 @@ public class RegisteredClientServiceImpl implements RegisteredClientRepository {
 }
 ```
 
-3. 
+3.
 
 #### 配置不需要认证授权的请求
 
