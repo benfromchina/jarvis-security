@@ -3,6 +3,7 @@ package com.stark.jarvis.security.oauth2.authentication.exchange;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stark.jarvis.security.oauth2.authentication.base.OAuth2ResourceOwnerBaseAuthenticationProvider;
+import com.stark.jarvis.security.oauth2.authentication.core.PreAuthenticationChecker;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,8 +36,11 @@ public class OAuth2ExchangeAuthenticationProvider extends OAuth2ResourceOwnerBas
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public OAuth2ExchangeAuthenticationProvider(OAuth2AuthorizationService authorizationService, OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator, @Lazy AuthenticationManager authenticationManager) {
-        super(authorizationService, tokenGenerator, authenticationManager);
+    public OAuth2ExchangeAuthenticationProvider(OAuth2AuthorizationService authorizationService,
+                                                OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
+                                                List<PreAuthenticationChecker> preAuthenticationCheckers,
+                                                @Lazy AuthenticationManager authenticationManager) {
+        super(authorizationService, tokenGenerator, preAuthenticationCheckers, authenticationManager);
         this.authorizationService = authorizationService;
     }
 

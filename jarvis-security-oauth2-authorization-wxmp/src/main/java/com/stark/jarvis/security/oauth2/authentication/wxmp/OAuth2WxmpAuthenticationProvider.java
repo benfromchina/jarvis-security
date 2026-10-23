@@ -1,6 +1,7 @@
 package com.stark.jarvis.security.oauth2.authentication.wxmp;
 
 import com.stark.jarvis.security.oauth2.authentication.base.OAuth2ResourceOwnerBaseAuthenticationProvider;
+import com.stark.jarvis.security.oauth2.authentication.core.PreAuthenticationChecker;
 import com.stark.jarvis.security.oauth2.authentication.wxmp.api.WxmpLoginService;
 import com.stark.jarvis.security.oauth2.authentication.wxmp.api.dto.SessionDTO;
 import com.stark.jarvis.security.oauth2.authentication.wxmp.api.util.WxmpUtils;
@@ -16,6 +17,7 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,10 +33,12 @@ public class OAuth2WxmpAuthenticationProvider extends OAuth2ResourceOwnerBaseAut
 
     private final WxmpLoginService loginService;
 
-    public OAuth2WxmpAuthenticationProvider(WxmpLoginService loginService, OAuth2AuthorizationService authorizationService,
+    public OAuth2WxmpAuthenticationProvider(WxmpLoginService loginService,
+                                            OAuth2AuthorizationService authorizationService,
                                             OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
+                                            List<PreAuthenticationChecker> preAuthenticationCheckers,
                                             @Lazy AuthenticationManager authenticationManager) {
-        super(authorizationService, tokenGenerator, authenticationManager);
+        super(authorizationService, tokenGenerator, preAuthenticationCheckers, authenticationManager);
         this.loginService = loginService;
     }
 
@@ -52,14 +56,16 @@ public class OAuth2WxmpAuthenticationProvider extends OAuth2ResourceOwnerBaseAut
             sessionDTO = loginService.code2Session(code);
         } catch (Throwable e) {
             log.error("Failed to get session by code: {}", code, e);
-            OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR, "Failed to get session by code.", OAuth2ParameterNamesExtended.URL_CODE_TO_SESSION);
+            OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR, "Failed to get session by code.",
+                    OAuth2ParameterNamesExtended.URL_CODE_TO_SESSION);
             throw new OAuth2AuthenticationException(error, e);
         }
         String username;
         try {
             username = WxmpUtils.serialize(sessionDTO);
         } catch (Exception e) {
-            OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR, "Failed to serialize session.", OAuth2ParameterNamesExtended.URL_CODE_TO_SESSION);
+            OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR, "Failed to serialize session.",
+                    OAuth2ParameterNamesExtended.URL_CODE_TO_SESSION);
             throw new OAuth2AuthenticationException(error, e);
         }
 

@@ -1,6 +1,7 @@
 package com.stark.jarvis.security.oauth2.authentication.password;
 
 import com.stark.jarvis.security.oauth2.authentication.base.OAuth2ResourceOwnerBaseAuthenticationProvider;
+import com.stark.jarvis.security.oauth2.authentication.core.PreAuthenticationChecker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +12,7 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,8 +26,11 @@ import java.util.Map;
 @Slf4j
 public class OAuth2PasswordAuthenticationProvider extends OAuth2ResourceOwnerBaseAuthenticationProvider {
 
-    public OAuth2PasswordAuthenticationProvider(OAuth2AuthorizationService authorizationService, OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator, @Lazy AuthenticationManager authenticationManager) {
-        super(authorizationService, tokenGenerator, authenticationManager);
+    public OAuth2PasswordAuthenticationProvider(OAuth2AuthorizationService authorizationService,
+                                                OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
+                                                List<PreAuthenticationChecker> preAuthenticationCheckers,
+                                                @Lazy AuthenticationManager authenticationManager) {
+        super(authorizationService, tokenGenerator, preAuthenticationCheckers, authenticationManager);
     }
 
     @Override
