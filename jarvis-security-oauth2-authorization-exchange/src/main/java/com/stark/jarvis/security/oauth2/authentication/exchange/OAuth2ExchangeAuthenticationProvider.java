@@ -3,6 +3,7 @@ package com.stark.jarvis.security.oauth2.authentication.exchange;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stark.jarvis.security.oauth2.authentication.base.OAuth2ResourceOwnerBaseAuthenticationProvider;
+import com.stark.jarvis.security.oauth2.authentication.core.BadCredentialsExceptionHandler;
 import com.stark.jarvis.security.oauth2.authentication.core.PreAuthenticationChecker;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,8 +40,9 @@ public class OAuth2ExchangeAuthenticationProvider extends OAuth2ResourceOwnerBas
     public OAuth2ExchangeAuthenticationProvider(OAuth2AuthorizationService authorizationService,
                                                 OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
                                                 List<PreAuthenticationChecker> preAuthenticationCheckers,
-                                                @Lazy AuthenticationManager authenticationManager) {
-        super(authorizationService, tokenGenerator, preAuthenticationCheckers, authenticationManager);
+                                                @Lazy AuthenticationManager authenticationManager,
+                                                List<BadCredentialsExceptionHandler> badCredentialsExceptionHandlers) {
+        super(authorizationService, tokenGenerator, preAuthenticationCheckers, authenticationManager, badCredentialsExceptionHandlers);
         this.authorizationService = authorizationService;
     }
 

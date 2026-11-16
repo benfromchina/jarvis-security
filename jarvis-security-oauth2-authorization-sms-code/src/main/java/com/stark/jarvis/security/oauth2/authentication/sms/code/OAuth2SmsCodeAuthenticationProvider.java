@@ -1,8 +1,8 @@
 package com.stark.jarvis.security.oauth2.authentication.sms.code;
 
 import com.stark.jarvis.security.oauth2.authentication.base.OAuth2ResourceOwnerBaseAuthenticationProvider;
+import com.stark.jarvis.security.oauth2.authentication.core.BadCredentialsExceptionHandler;
 import com.stark.jarvis.security.oauth2.authentication.core.PreAuthenticationChecker;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,14 +22,14 @@ import java.util.Map;
  * @since 2024/7/21
  */
 @Component
-@Slf4j
 public class OAuth2SmsCodeAuthenticationProvider extends OAuth2ResourceOwnerBaseAuthenticationProvider {
 
     public OAuth2SmsCodeAuthenticationProvider(OAuth2AuthorizationService authorizationService,
                                                OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
                                                List<PreAuthenticationChecker> preAuthenticationCheckers,
-                                               @Lazy AuthenticationManager authenticationManager) {
-        super(authorizationService, tokenGenerator, preAuthenticationCheckers, authenticationManager);
+                                               @Lazy AuthenticationManager authenticationManager,
+                                               List<BadCredentialsExceptionHandler> badCredentialsExceptionHandlers) {
+        super(authorizationService, tokenGenerator, preAuthenticationCheckers, authenticationManager, badCredentialsExceptionHandlers);
     }
 
     @Override

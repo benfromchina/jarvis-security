@@ -1,6 +1,7 @@
 package com.stark.jarvis.security.oauth2.authentication.wxmp;
 
 import com.stark.jarvis.security.oauth2.authentication.base.OAuth2ResourceOwnerBaseAuthenticationProvider;
+import com.stark.jarvis.security.oauth2.authentication.core.BadCredentialsExceptionHandler;
 import com.stark.jarvis.security.oauth2.authentication.core.PreAuthenticationChecker;
 import com.stark.jarvis.security.oauth2.authentication.wxmp.api.WxmpLoginService;
 import com.stark.jarvis.security.oauth2.authentication.wxmp.api.dto.SessionDTO;
@@ -37,8 +38,9 @@ public class OAuth2WxmpAuthenticationProvider extends OAuth2ResourceOwnerBaseAut
                                             OAuth2AuthorizationService authorizationService,
                                             OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
                                             List<PreAuthenticationChecker> preAuthenticationCheckers,
-                                            @Lazy AuthenticationManager authenticationManager) {
-        super(authorizationService, tokenGenerator, preAuthenticationCheckers, authenticationManager);
+                                            @Lazy AuthenticationManager authenticationManager,
+                                            List<BadCredentialsExceptionHandler> badCredentialsExceptionHandlers) {
+        super(authorizationService, tokenGenerator, preAuthenticationCheckers, authenticationManager, badCredentialsExceptionHandlers);
         this.loginService = loginService;
     }
 

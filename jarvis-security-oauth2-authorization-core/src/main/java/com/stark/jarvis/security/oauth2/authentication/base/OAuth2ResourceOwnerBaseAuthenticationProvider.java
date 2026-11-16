@@ -1,13 +1,13 @@
 package com.stark.jarvis.security.oauth2.authentication.base;
 
+import com.stark.jarvis.security.oauth2.authentication.core.BadCredentialsExceptionHandler;
 import com.stark.jarvis.security.oauth2.authentication.core.OAuth2ResourceOwnerAuthenticationProvider;
 import com.stark.jarvis.security.oauth2.authentication.core.PreAuthenticationChecker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -50,10 +50,13 @@ public abstract class OAuth2ResourceOwnerBaseAuthenticationProvider implements O
 
     private final AuthenticationManager authenticationManager;
 
+    private final List<BadCredentialsExceptionHandler> badCredentialsExceptionHandlers;
+
     public OAuth2ResourceOwnerBaseAuthenticationProvider(OAuth2AuthorizationService authorizationService,
                                                          OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
                                                          List<PreAuthenticationChecker> preAuthenticationCheckers,
-                                                         AuthenticationManager authenticationManager) {
+                                                         AuthenticationManager authenticationManager,
+                                                         List<BadCredentialsExceptionHandler> badCredentialsExceptionHandlers) {
         Assert.notNull(authorizationService, "authorizationService cannot be null");
         Assert.notNull(tokenGenerator, "tokenGenerator cannot be null");
         Assert.notNull(authenticationManager, "authenticationManager cannot be null");
@@ -61,6 +64,7 @@ public abstract class OAuth2ResourceOwnerBaseAuthenticationProvider implements O
         this.tokenGenerator = tokenGenerator;
         this.preAuthenticationCheckers = preAuthenticationCheckers;
         this.authenticationManager = authenticationManager;
+        this.badCredentialsExceptionHandlers = badCredentialsExceptionHandlers;
     }
 
     @Override
@@ -88,7 +92,15 @@ public abstract class OAuth2ResourceOwnerBaseAuthenticationProvider implements O
         if (preAuthenticationCheckers != null) {
             preAuthenticationCheckers.forEach(checker -> checker.check(authentication.getClass(), usernamePasswordAuthenticationToken));
         }
-        Authentication usernamePasswordAuthentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        Authentication usernamePasswordAuthentication;
+        try {
+            usernamePasswordAuthentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        } catch (BadCredentialsException e) {
+            if (badCredentialsExceptionHandlers != null) {
+                badCredentialsExceptionHandlers.forEach(handler -> handler.handle(usernamePasswordAuthenticationToken));
+            }
+            throw e;
+        }
 
         // @formatter:off
         DefaultOAuth2TokenContext.Builder tokenContextBuilder = DefaultOAuth2TokenContext.builder()
