@@ -6,6 +6,7 @@ import com.stark.jarvis.security.oauth2.authentication.core.PreAuthenticationChe
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
@@ -35,6 +36,11 @@ public class OAuth2SmsCodeAuthenticationProvider extends OAuth2ResourceOwnerBase
     @Override
     public boolean supports(Class<?> authentication) {
         return OAuth2SmsCodeAuthenticationToken.class.isAssignableFrom(authentication);
+    }
+
+    @Override
+    public AuthorizationGrantType getGrantType() {
+        return new AuthorizationGrantType(OAuth2ParameterNamesExtended.GRANT_TYPE);
     }
 
     @Override

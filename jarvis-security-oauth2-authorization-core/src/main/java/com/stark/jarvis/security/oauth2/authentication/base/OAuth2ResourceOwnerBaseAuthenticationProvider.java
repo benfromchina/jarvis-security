@@ -88,6 +88,16 @@ public abstract class OAuth2ResourceOwnerBaseAuthenticationProvider implements O
             throw new OAuth2AuthenticationException(error);
         }
 
+        // Validate the grant type
+        AuthorizationGrantType grantType = getGrantType();
+        if (!registeredClient.getAuthorizationGrantTypes().contains(grantType)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Invalid request: requested grant_type is not allowed for registered client '{}'",
+                        registeredClient.getId());
+            }
+            throw new OAuth2AuthenticationException(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT);
+        }
+
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = buildToken(resourceOwnerBaseAuthentication.getAdditionalParameters());
         if (preAuthenticationCheckers != null) {
             preAuthenticationCheckers.forEach(checker -> checker.check(authentication.getClass(), usernamePasswordAuthenticationToken));
@@ -179,6 +189,8 @@ public abstract class OAuth2ResourceOwnerBaseAuthenticationProvider implements O
 
     @Override
     public abstract boolean supports(Class<?> authentication);
+
+    public abstract AuthorizationGrantType getGrantType();
 
     public abstract UsernamePasswordAuthenticationToken buildToken(Map<String, Object> getAdditionalParameters);
 

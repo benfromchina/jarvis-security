@@ -8,10 +8,7 @@ import com.stark.jarvis.security.oauth2.authentication.core.PreAuthenticationChe
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
-import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
-import org.springframework.security.oauth2.core.OAuth2Token;
+import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
@@ -49,6 +46,11 @@ public class OAuth2ExchangeAuthenticationProvider extends OAuth2ResourceOwnerBas
     @Override
     public boolean supports(Class<?> authentication) {
         return OAuth2ExchangeAuthenticationToken.class.isAssignableFrom(authentication);
+    }
+
+    @Override
+    public AuthorizationGrantType getGrantType() {
+        return new AuthorizationGrantType(OAuth2ParameterNamesExtended.GRANT_TYPE);
     }
 
     @Override

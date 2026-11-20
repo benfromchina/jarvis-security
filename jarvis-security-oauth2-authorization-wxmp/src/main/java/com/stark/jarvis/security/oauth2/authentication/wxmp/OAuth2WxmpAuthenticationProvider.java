@@ -10,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
-import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
-import org.springframework.security.oauth2.core.OAuth2Token;
+import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
@@ -47,6 +44,11 @@ public class OAuth2WxmpAuthenticationProvider extends OAuth2ResourceOwnerBaseAut
     @Override
     public boolean supports(Class<?> authentication) {
         return OAuth2WxmpAuthenticationToken.class.isAssignableFrom(authentication);
+    }
+
+    @Override
+    public AuthorizationGrantType getGrantType() {
+        return new AuthorizationGrantType(OAuth2ParameterNamesExtended.GRANT_TYPE);
     }
 
     @Override
