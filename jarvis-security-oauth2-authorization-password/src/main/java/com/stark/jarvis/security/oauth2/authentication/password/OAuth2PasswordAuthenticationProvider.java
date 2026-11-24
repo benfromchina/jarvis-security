@@ -87,7 +87,7 @@ public class OAuth2PasswordAuthenticationProvider extends OAuth2ResourceOwnerBas
                         username, clientIp, passwordProperties.getAllowIp());
                 throw new OAuth2AuthenticationException(error);
             }
-            log.warn("IP地址在白名单内: username={},clientIp={},allowIp={}",
+            log.info("IP地址在白名单内: username={},clientIp={},allowIp={}",
                     username, clientIp, passwordProperties.getAllowIp());
         }
 
